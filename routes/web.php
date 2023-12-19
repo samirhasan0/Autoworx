@@ -17,6 +17,8 @@ use Inertia\Inertia;
 */
 
 Route::inertia("/", "Index");
+Route::inertia("/communication/client", "Client");
+Route::inertia("invoice", "Invoice");
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
