@@ -26,6 +26,7 @@
     },
     "dependencies": {
         "clsx": "^2.0.0",
+        "react-icons": "^4.12.0",
         "react-inlinesvg": "^4.1.0",
         "tailwind-merge": "^2.1.0"
     }
