@@ -62,33 +62,36 @@ export default function SideNavbar() {
                   </p>
                 </div>
 
-                {isOpen && (
-                  <div className="flex flex-col mt-4 gap-4">
-                    {navItem.subItems?.map((subItem) => (
-                      <div className="flex items-center gap-4">
-                        <div
-                          className={cn(
-                            "w-[4px] h-[4px] rounded-full",
-                            lastPath === "/" + subItem.path.split("/").pop()
-                              ? "bg-[#6571FF]"
-                              : "bg-[#66738C]"
-                          )}
-                        ></div>
-                        <Link
-                          href={subItem.path}
-                          className={cn(
-                            "cursor-pointer text-[14px]",
-                            lastPath === "/" + subItem.path.split("/").pop()
-                              ? "text-[#6571FF]"
-                              : "text-[#66738C]"
-                          )}
-                        >
-                          {subItem.name}
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div
+                  className={cn(
+                    "flex flex-col gap-4 overflow-hidden transition-all duration-300 ease-in-out",
+                    isOpen ? "max-h-[100px] mt-4" : "max-h-0"
+                  )}
+                >
+                  {navItem.subItems?.map((subItem) => (
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={cn(
+                          "w-[4px] h-[4px] rounded-full",
+                          lastPath === "/" + subItem.path.split("/").pop()
+                            ? "bg-[#6571FF]"
+                            : "bg-[#66738C]"
+                        )}
+                      ></div>
+                      <Link
+                        href={subItem.path}
+                        className={cn(
+                          "cursor-pointer text-[14px]",
+                          lastPath === "/" + subItem.path.split("/").pop()
+                            ? "text-[#6571FF]"
+                            : "text-[#66738C]"
+                        )}
+                      >
+                        {subItem.name}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : (
               <div className="flex items-center gap-4">
