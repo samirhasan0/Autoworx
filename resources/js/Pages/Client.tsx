@@ -1,5 +1,5 @@
-import Layout from "@/Components/Layout";
+import Title from "@/Components/Title";
 
 export default function Index() {
-  return <h1 className="font-bold text-4xl">Client Page</h1>;
+  return <Title>Communication Hub - Client</Title>;
 }

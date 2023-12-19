@@ -20,20 +20,19 @@ export const NAV_LINKS = [
   },
   {
     name: "Communication Hub",
-    path: "/communication",
     subItems: SUB_NAV_LINKS,
   },
   {
     name: "Sales Funnel Management",
-    path: "/sales-funnel-management",
+    path: "/sales",
   },
   {
     name: "Task and Activity Management",
-    path: "/task-and-activity-management",
+    path: "/task",
   },
   {
     name: "Analytics and Reporting",
-    path: "/analytics-and-reporting",
+    path: "/analytics",
   },
   {
     name: "Invoice",

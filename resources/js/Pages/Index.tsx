@@ -1,7 +1,8 @@
 import Layout from "@/Components/Layout";
+import Title from "@/Components/Title";
 
 const Index = () => {
-  return <h1 className="font-bold text-4xl">Home page</h1>;
+  return <Title>Dashboard</Title>;
 };
 
 export default Index;
