@@ -1,4 +1,10 @@
-export const SUB_NAV_LINKS = [
+export interface NavItem {
+  name: string;
+  path?: string;
+  subItems?: NavItem[];
+}
+
+export const SUB_NAV_LINKS: NavItem[] = [
   {
     name: "Client",
     path: "/communication/client",
@@ -13,7 +19,7 @@ export const SUB_NAV_LINKS = [
   },
 ];
 
-export const NAV_LINKS = [
+export const NAV_LINKS: NavItem[] = [
   {
     name: "Dashboard",
     path: "/",
