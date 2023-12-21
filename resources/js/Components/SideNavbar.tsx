@@ -1,7 +1,7 @@
 import { cn } from "@/lib/cn";
 import { NAV_LINKS, NavItem, SUB_NAV_LINKS } from "@/lib/const";
 import { Link } from "@inertiajs/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import InlineSVG from "react-inlinesvg";
 import { router } from "@inertiajs/react";
 
@@ -22,6 +22,7 @@ export default function SideNavbar() {
     return SUB_NAV_LINKS.some((navItem) => ifItemActive(navItem));
   }
 
+  // Fold the dropdown menu when navigating
   router.on("navigate", () => {
     setIsOpen(
       SUB_NAV_LINKS.some(
@@ -51,7 +52,7 @@ export default function SideNavbar() {
       {/* nav items */}
       <div className="flex flex-col gap-4 mt-4">
         {NAV_LINKS.map((navItem) => (
-          <>
+          <div key={navItem.name}>
             {/* If navItem has subItems */}
             {navItem.subItems ? (
               <div className="flex flex-col">
@@ -85,7 +86,7 @@ export default function SideNavbar() {
                   )}
                 >
                   {navItem.subItems?.map((subItem) => (
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4" key={subItem.name}>
                       {/* Circle */}
                       <div
                         className={cn(
@@ -137,7 +138,7 @@ export default function SideNavbar() {
                 </Link>
               </div>
             )}
-          </>
+          </div>
         ))}
       </div>
     </nav>

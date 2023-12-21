@@ -1,8 +1,3 @@
-import { Link } from "@inertiajs/react";
-import { useState } from "react";
-import InlineSvg from "react-inlinesvg";
-import { NAV_LINKS, SUB_NAV_LINKS } from "@/lib/const";
-import { cn } from "@/lib/cn";
 import SideNavbar from "./SideNavbar";
 import TopNavbar from "./TopNavbar";
 
