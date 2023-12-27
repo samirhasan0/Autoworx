@@ -13,13 +13,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::inertia("/", "Index");
-Route::inertia("/communication/client", "Client");
-Route::inertia("/communication/internal", "Internal");
-Route::inertia("/communication/collaboration", "Collaboration");
-Route::inertia("/sales", "Sales");
-Route::inertia("task", "Task");
-Route::inertia("analytics", "Analytics");
-Route::inertia("invoice", "Invoice");
+Route::middleware('auth')->group(function () {
+    Route::inertia("/", "Index");
+    Route::inertia("/communication/client", "Client");
+    Route::inertia("/communication/internal", "Internal");
+    Route::inertia("/communication/collaboration", "Collaboration");
+    Route::inertia("/sales", "Sales");
+    Route::inertia("task", "Task");
+    Route::inertia("analytics", "Analytics");
+    Route::inertia("invoice", "Invoice");
+});
+
 
 require __DIR__ . '/auth.php';
