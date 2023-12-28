@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="ml-[20%]">
         <TopNavbar />
 
-        <main className="bg-[#F8F9FA] h-[93vh] p-5">{children}</main>
+        <main className="bg-[#F8F9FA] h-[93vh] p-7 relative">{children}</main>
       </div>
     </div>
   );
