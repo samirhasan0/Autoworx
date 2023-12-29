@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +20,15 @@ Route::middleware('auth')->group(function () {
     Route::inertia("/communication/internal", "Internal");
     Route::inertia("/communication/collaboration", "Collaboration");
     Route::inertia("/sales", "Sales");
-    Route::inertia("task", "Task");
+    Route::get("/task", function () {
+        return Inertia\Inertia::render("Task", [
+            "tasks" => App\Models\Task::all(),
+        ]);
+    });
     Route::inertia("analytics", "Analytics");
     Route::inertia("invoice", "Invoice");
+
+    Route::post("/task", [TaskController::class, "store"])->name("task.store");
 });
 
 
