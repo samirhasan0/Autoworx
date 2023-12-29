@@ -1,6 +1,8 @@
-import { cn } from "@/lib/cn";
+import { usePopupStore } from "@/stores/popup";
 
 export default function Month() {
+  const { open } = usePopupStore();
+
   // Initialize an array to hold the dates
   const dates: number[] = [];
   // Define the total number of dates to be displayed
@@ -54,18 +56,35 @@ export default function Month() {
   return (
     <div className="border-[#797979] border-l border-t h-[90%] mt-3">
       <div className="grid grid-cols-7">
-        {cells.map((cell, i) => (
-          <div
-            className={cn(
-              "border-b border-r border-[#797979] text-[#797979] flex p-2 w-[160px] font-bold",
-              i < 7
-                ? "h-[50px] text-[17px] justify-center"
-                : "h-[115.5px] text-[23px] justify-end"
-            )}
-          >
-            {cell}
-          </div>
-        ))}
+        {cells.map((cell, i) => {
+          if (i < 7)
+            return (
+              <div
+                key={i}
+                className="border-b border-r border-[#797979] text-[#797979] flex p-2 w-[160px] font-bold h-[50px] text-[17px] justify-center"
+              >
+                {cell}
+              </div>
+            );
+
+          return (
+            <button
+              key={i}
+              className="border-b border-r border-[#797979] text-[#797979] flex p-2 w-[160px] h-[115.5px] text-[23px] justify-end"
+              onClick={() => {
+                open("ADD_TASK", {
+                  date: `${today.getFullYear()}-${today.getMonth() + 1}-${
+                    // Add a zero to the date if it is less than 10
+                    // @ts-ignore
+                    cell < 10 ? "0" + cell : cell
+                  }`,
+                });
+              }}
+            >
+              {cell}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
