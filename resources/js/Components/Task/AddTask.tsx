@@ -6,12 +6,13 @@ export default function AddTask() {
   const { data: taskData, close } = usePopupStore();
 
   console.log(taskData.date);
+  console.log(taskData.start_time);
 
   const { data, setData, post, processing, errors, reset } = useForm({
-    title: "Fuck you",
+    title: "Meeting with client",
     date: taskData.date,
-    start_time: "",
-    end_time: "",
+    start_time: taskData.start_time,
+    end_time: taskData.end_time,
     type: "task",
   });
 
