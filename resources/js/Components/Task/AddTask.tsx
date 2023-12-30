@@ -49,6 +49,7 @@ export default function AddTask() {
             className="border border-gray-300 rounded-md p-2 mt-2"
             value={data.title}
             onChange={(e) => setData("title", e.target.value)}
+            autoFocus
           />
           {errors.title && (
             <div className="text-red-500 text-sm">{errors.title}</div>

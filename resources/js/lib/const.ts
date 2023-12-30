@@ -1,3 +1,9 @@
+export const TASK_COLOR = {
+  task: "#6571FF",
+  event: "#006D77",
+  appointment: "#64FFDA",
+};
+
 export interface NavItem {
   name: string;
   path?: string;

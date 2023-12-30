@@ -12,7 +12,7 @@ export default function Task({ tasks }: { tasks: TaskType[] }) {
 
       <Title>Task and Activity Management</Title>
 
-      <Calender />
+      <Calender tasks={tasks} />
     </>
   );
 }

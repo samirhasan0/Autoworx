@@ -1,9 +1,13 @@
 import { cn } from "@/lib/cn";
+import { TASK_COLOR } from "@/lib/const";
 import { usePopupStore } from "@/stores/popup";
+import { TaskType } from "@/types/task";
 import moment from "moment";
 
-export default function Week() {
+export default function Week({ tasks }: { tasks: TaskType[] }) {
   const { open } = usePopupStore();
+
+  console.log("Tasks: ", tasks);
 
   // Get the current date
   const today = new Date();
@@ -52,8 +56,42 @@ export default function Week() {
   // Combine the all-day row and the hourly rows into a single array
   const rows = [allDayRow, ...hourlyRows];
 
+  // Get the start and end of the current week
+  const startOfWeek = moment().startOf("week").toDate();
+  const endOfWeek = moment().endOf("week").toDate();
+
+  // Filter out the tasks that are within the current week
+  const weekTasks = tasks
+    .filter((task) => {
+      const taskDate = new Date(task.date);
+      return taskDate >= startOfWeek && taskDate <= endOfWeek;
+    })
+    .map((task) => {
+      const taskDate = new Date(task.date);
+      const columnIndex = taskDate.getDay() - startOfWeek.getDay();
+
+      // Convert the taskStartTime and taskEndTime to a format like "1 PM" or "11 AM"
+      const taskStartTime = moment(task.start_time, "HH:mm").format("h A");
+      const taskEndTime = moment(task.end_time, "HH:mm").format("h A");
+
+      console.log("Task Start Time: ", taskStartTime);
+      console.log("Task End Time: ", taskEndTime);
+
+      // Find the rowStartIndex and rowEndIndex by looping over the hourlyRows
+      const rowStartIndex = hourlyRows.findIndex((row) =>
+        row.includes(taskStartTime)
+      );
+      const rowEndIndex = hourlyRows.findIndex((row) =>
+        row.includes(taskEndTime)
+      );
+
+      return { ...task, columnIndex, rowStartIndex, rowEndIndex };
+    });
+
+  console.log("Week Tasks: ", weekTasks);
+
   return (
-    <div className="border-[#797979] border-l border-t border-b h-[90%] mt-3 overflow-scroll">
+    <div className="relative border-[#797979] w-[1116px] border-l border-t border-b h-[90%] mt-3 overflow-scroll">
       {rows.map((row: any, rowIndex: number) => (
         <div
           className={cn(
@@ -64,7 +102,10 @@ export default function Week() {
         >
           {row.map((column: any, columnIndex: number) => {
             const isHeaderCell = columnIndex === 0 || rowIndex === 0;
-            const cellWidth = columnIndex === 0 ? "w-[100px]" : "w-[150px]";
+            const cellWidth =
+              columnIndex === 0
+                ? "min-w-[100px] max-w-[100px]"
+                : "min-w-[145px] max-w-[145px]";
             const fontSize =
               rowIndex === 0 ? "font-bold text-[19px]" : "text-[17px]";
             const cellClasses = cn(
@@ -98,6 +139,36 @@ export default function Week() {
           })}
         </div>
       ))}
+
+      {weekTasks.map((task) => {
+        const left = `${145 * task.columnIndex + 100}px`;
+        const top = `${45 * task.rowStartIndex + 45}px`;
+        const height = `${45 * (task.rowEndIndex - task.rowStartIndex + 1)}px`;
+        const width = "145px";
+        const bg = TASK_COLOR[task.type];
+
+        return (
+          <div
+            key={task.id}
+            className={cn(
+              `text-white absolute p-1 rounded-lg text-[17px] top-0 z-10 bg-[${bg}]`
+            )}
+            style={{
+              left,
+              top,
+              height,
+              maxWidth: width,
+              minWidth: width,
+            }}
+          >
+            {height === "45px"
+              ? task.title.slice(0, 15) + "..."
+              : height === "90px"
+              ? task.title.slice(0, 30) + "..."
+              : task.title}
+          </div>
+        );
+      })}
     </div>
   );
 }
