@@ -9,7 +9,7 @@ export default function AddTask() {
   console.log(taskData.start_time);
 
   const { data, setData, post, processing, errors, reset } = useForm({
-    title: "Meeting with client",
+    title: "",
     date: taskData.date,
     start_time: taskData.start_time,
     end_time: taskData.end_time,
@@ -18,9 +18,20 @@ export default function AddTask() {
 
   const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    post(route("task.store"));
-    close();
+    post(route("task.store"), {
+      onSuccess: () => {
+        close();
+      },
+    });
   };
+
+  function getCurrentDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
 
   return (
     <Popup>
@@ -28,12 +39,14 @@ export default function AddTask() {
         <h2 className="text-center font-bold text-2xl">Add Schedule</h2>
 
         <div className="flex flex-col mb-4">
-          <label htmlFor="title">Name</label>
+          <label htmlFor="title" className="font-bold">
+            Name
+          </label>
           <input
             type="text"
             name="title"
             id="title"
-            className="border border-gray-300 rounded-md p-2"
+            className="border border-gray-300 rounded-md p-2 mt-2"
             value={data.title}
             onChange={(e) => setData("title", e.target.value)}
           />
@@ -43,12 +56,15 @@ export default function AddTask() {
         </div>
 
         <div className="flex flex-col mb-4">
-          <label htmlFor="date">Date</label>
+          <label htmlFor="date" className="font-bold">
+            Date
+          </label>
           <input
             type="date"
             name="date"
             id="date"
-            className="border border-gray-300 rounded-md p-2"
+            min={getCurrentDate()}
+            className="border border-gray-300 rounded-md p-2 mt-2"
             value={data.date}
             onChange={(e) => setData("date", e.target.value)}
           />
@@ -58,12 +74,14 @@ export default function AddTask() {
         </div>
 
         <div className="flex flex-col mb-4">
-          <label htmlFor="start_time">Start Time</label>
+          <label htmlFor="start_time" className="font-bold">
+            Start Time
+          </label>
           <input
             type="time"
             name="start_time"
             id="start_time"
-            className="border border-gray-300 rounded-md p-2"
+            className="border border-gray-300 rounded-md p-2 mt-2"
             value={data.start_time}
             onChange={(e) => setData("start_time", e.target.value)}
           />
@@ -73,12 +91,14 @@ export default function AddTask() {
         </div>
 
         <div className="flex flex-col mb-4">
-          <label htmlFor="end_time">End Time</label>
+          <label htmlFor="end_time" className="font-bold">
+            End Time
+          </label>
           <input
             type="time"
             name="end_time"
             id="end_time"
-            className="border border-gray-300 rounded-md p-2"
+            className="border border-gray-300 rounded-md p-2 mt-2"
             value={data.end_time}
             onChange={(e) => setData("end_time", e.target.value)}
           />
@@ -88,11 +108,13 @@ export default function AddTask() {
         </div>
 
         <div className="flex flex-col mb-4">
-          <label htmlFor="type">Type</label>
+          <label htmlFor="type" className="font-bold">
+            Type
+          </label>
           <select
             name="type"
             id="type"
-            className="border border-gray-300 rounded-md p-2"
+            className="border border-gray-300 rounded-md p-2 mt-2"
             value={data.type}
             onChange={(e) => setData("type", e.target.value)}
           >
