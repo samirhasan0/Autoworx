@@ -40,7 +40,7 @@ export default function AddTask() {
 
         <div className="flex flex-col mb-4">
           <label htmlFor="title" className="font-bold">
-            Name
+            Title
           </label>
           <input
             type="text"
