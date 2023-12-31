@@ -1,5 +1,5 @@
 import { useForm } from "@inertiajs/react";
-import Popup from "../Popup";
+import Popup from "../../Popup";
 import { usePopupStore } from "@/stores/popup";
 
 export default function AddTask() {

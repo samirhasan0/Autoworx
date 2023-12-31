@@ -1,4 +1,4 @@
-import Calender from "@/Components/Task/Calender";
+import Calendar from "@/Components/Task/calendar/Calendar";
 import Title from "@/Components/Title";
 import { TaskType } from "@/types/task";
 import { useForm, Head } from "@inertiajs/react";
@@ -12,7 +12,7 @@ export default function Task({ tasks }: { tasks: TaskType[] }) {
 
       <Title>Task and Activity Management</Title>
 
-      <Calender tasks={tasks} />
+      <Calendar tasks={tasks} />
     </>
   );
 }
