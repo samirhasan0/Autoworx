@@ -7,8 +7,6 @@ import moment from "moment";
 export default function Week({ tasks }: { tasks: TaskType[] }) {
   const { open } = usePopupStore();
 
-  console.log("Tasks: ", tasks);
-
   // Get the current date
   const today = new Date();
 
@@ -145,27 +143,32 @@ export default function Week({ tasks }: { tasks: TaskType[] }) {
         const top = `${45 * task.rowStartIndex + 45}px`;
         const height = `${45 * (task.rowEndIndex - task.rowStartIndex + 1)}px`;
         const width = "145px";
-        const bg = TASK_COLOR[task.type];
+        const backgroundColor = TASK_COLOR[task.type];
+
+        // Define a function to truncate the task title based on the height
+        const truncateTitle = (title: string, maxLength: number) => {
+          return title.length > maxLength
+            ? title.slice(0, maxLength) + "..."
+            : title;
+        };
+
+        // Define the maximum title length based on the height
+        const maxTitleLength =
+          height === "45px" ? 15 : height === "90px" ? 30 : task.title.length;
 
         return (
           <div
-            key={task.id}
-            className={cn(
-              `text-white absolute p-1 rounded-lg text-[17px] top-0 z-10 bg-[${bg}]`
-            )}
+            className={`border text-white absolute p-1 rounded-lg text-[17px] top-0 z-10`}
             style={{
               left,
               top,
               height,
+              backgroundColor,
               maxWidth: width,
               minWidth: width,
             }}
           >
-            {height === "45px"
-              ? task.title.slice(0, 15) + "..."
-              : height === "90px"
-              ? task.title.slice(0, 30) + "..."
-              : task.title}
+            {truncateTitle(task.title, maxTitleLength)}
           </div>
         );
       })}
