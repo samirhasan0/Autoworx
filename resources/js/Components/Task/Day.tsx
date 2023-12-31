@@ -1,8 +1,10 @@
 import { cn } from "@/lib/cn";
+import { TASK_COLOR } from "@/lib/const";
 import { usePopupStore } from "@/stores/popup";
+import { TaskType } from "@/types/task";
 import moment from "moment";
 
-export default function Day() {
+export default function Day({ tasks }: { tasks: TaskType[] }) {
   const { open } = usePopupStore();
 
   const rows = [
@@ -15,6 +17,25 @@ export default function Day() {
     ),
   ];
 
+  const dayTasks = tasks
+    .filter((task) => {
+      // return today's tasks
+      const taskDate = new Date(task.date);
+      const today = new Date();
+      return taskDate.getDate() === today.getDate();
+    })
+    .map((task) => {
+      const taskStartTime = moment(task.start_time, "HH:mm").format("h A");
+      const taskEndTime = moment(task.end_time, "HH:mm").format("h A");
+
+      // Find the rowStartIndex and rowEndIndex by looping through the rows array
+      const rowStartIndex = rows.findIndex((row) => row === taskStartTime);
+      const rowEndIndex = rows.findIndex((row) => row === taskEndTime);
+
+      // Return the task with the rowStartIndex and rowEndIndex
+      return { ...task, rowStartIndex, rowEndIndex };
+    });
+
   function formatDate(date: Date) {
     return moment(date).format("YYYY-MM-DD");
   }
@@ -26,7 +47,7 @@ export default function Day() {
   }
 
   return (
-    <div className="border-[#797979] border h-[90%] mt-3 overflow-scroll">
+    <div className="relative border-[#797979] border h-[90%] mt-3 overflow-scroll">
       {rows.map((row, i) => (
         <button
           key={i}
@@ -53,6 +74,43 @@ export default function Day() {
           </div>
         </button>
       ))}
+
+      {/* Tasks */}
+      {dayTasks.map((task) => {
+        const left = "130px";
+        const top = `${task.rowStartIndex * 45}px`;
+        const height = `${(task.rowEndIndex - task.rowStartIndex) * 45}px`;
+        const width = "145px";
+        const backgroundColor = TASK_COLOR[task.type];
+
+        // Define a function to truncate the task title based on the height
+        const truncateTitle = (title: string, maxLength: number) => {
+          return title.length > maxLength
+            ? title.slice(0, maxLength) + "..."
+            : title;
+        };
+
+        // Define the maximum title length based on the height
+        const maxTitleLength =
+          height === "45px" ? 15 : height === "90px" ? 30 : task.title.length;
+
+        return (
+          <div
+            key={task.id}
+            className={`border text-white absolute px-2 py-1 rounded-lg text-[17px] top-0 z-10`}
+            style={{
+              left,
+              top,
+              height,
+              backgroundColor,
+              maxWidth: width,
+              minWidth: width,
+            }}
+          >
+            {truncateTitle(task.title, maxTitleLength)}
+          </div>
+        );
+      })}
     </div>
   );
 }

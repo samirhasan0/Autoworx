@@ -1,7 +1,7 @@
 export const TASK_COLOR = {
   task: "#6571FF",
   event: "#006D77",
-  appointment: "#64FFDA",
+  appointment: "#25AADD",
 };
 
 export interface NavItem {
