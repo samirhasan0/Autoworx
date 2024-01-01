@@ -4,10 +4,10 @@ import Week from "./Week";
 import Month from "./Month";
 import { TaskType } from "@/types/task";
 
-export default function Body({ tasks }: { tasks: TaskType[] }) {
+export default function Body() {
   const { calenderType } = useCalenderTypeStore();
 
-  if (calenderType === "DAY") return <Day tasks={tasks} />;
-  if (calenderType === "WEEK") return <Week tasks={tasks} />;
-  if (calenderType === "MONTH") return <Month tasks={tasks} />;
+  if (calenderType === "DAY") return <Day />;
+  if (calenderType === "WEEK") return <Week />;
+  if (calenderType === "MONTH") return <Month />;
 }

@@ -1,11 +1,17 @@
 import Calendar from "@/Components/Task/calendar/Calendar";
 import CalendarUser from "@/Components/Task/users/CalendarUser";
 import Title from "@/Components/Title";
+import { useTaskStore } from "@/stores/tasks";
 import { TaskType } from "@/types/task";
-import { useForm, Head } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
+import { useEffect } from "react";
 
 export default function Task({ tasks }: { tasks: TaskType[] }) {
-  console.log(tasks);
+  const { setTasks } = useTaskStore();
+
+  useEffect(() => {
+    setTasks(tasks);
+  }, [tasks]);
 
   return (
     <>
@@ -14,7 +20,7 @@ export default function Task({ tasks }: { tasks: TaskType[] }) {
       <Title>Task and Activity Management</Title>
 
       <div className="flex">
-        <Calendar tasks={tasks} />
+        <Calendar />
         <CalendarUser />
       </div>
     </>

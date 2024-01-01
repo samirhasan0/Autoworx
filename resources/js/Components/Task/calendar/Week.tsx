@@ -1,11 +1,13 @@
 import { cn } from "@/lib/cn";
 import { TASK_COLOR } from "@/lib/const";
 import { usePopupStore } from "@/stores/popup";
+import { useTaskStore } from "@/stores/tasks";
 import { TaskType } from "@/types/task";
 import moment from "moment";
 
-export default function Week({ tasks }: { tasks: TaskType[] }) {
+export default function Week() {
   const { open } = usePopupStore();
+  const { tasks } = useTaskStore();
 
   // Get the current date
   const today = new Date();
