@@ -1,38 +1,14 @@
 import { cn } from "@/lib/cn";
 import React, { useState } from "react";
+import User from "./User";
+import { usePopupStore } from "@/stores/popup";
+import { useUsersStore } from "@/stores/users";
 
 export default function Users() {
-  const fakeUsers = [
-    {
-      name: "Shanto",
-      image: "/images/default.png",
-      tasks: ["Lorem ipsum", "dolor sit amet", "consectetur adipisicing elit"],
-    },
-    {
-      name: "Samir",
-      image: "/images/default.png",
-      tasks: [
-        "Lorem ipsum",
-        "dolor sit amet",
-        "consectetur adipisicing elit",
-        "Lorem ipsum",
-        "dolor sit amet",
-      ],
-    },
-    {
-      name: "Amir",
-      image: "/images/default.png",
-      tasks: [
-        "Lorem ipsum",
-        "dolor sit amet",
-        "consectetur adipisicing elit",
-        "Lorem ipsum",
-        "dolor sit amet",
-      ],
-    },
-  ];
+  const { users } = useUsersStore();
 
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
+  const { open } = usePopupStore();
 
   return (
     <div className="bg-white calender-shadow h-[660px] mt-5 rounded-[12px] p-3">
@@ -49,8 +25,8 @@ export default function Users() {
         </button>
       </form>
 
-      <div className="mt-5">
-        {fakeUsers.map((user, index) => {
+      <div className="mt-5 h-[490px] overflow-scroll">
+        {users.map((user, index) => {
           const isSelected = selectedUser === index;
 
           function handleClick() {
@@ -62,35 +38,23 @@ export default function Users() {
           }
 
           return (
-            <>
-              <button
-                className={cn(
-                  "flex items-center py-2 mt-2 w-full rounded-lg",
-                  isSelected ? "bg-[#006D77]" : "bg-[#F8F9FA]"
-                )}
-                onClick={handleClick}
-                key={index}
-              >
-                <img
-                  src={user.image}
-                  alt=""
-                  className="w-[50px] h-[50px] rounded-full"
-                />
-                <p
-                  className={cn(
-                    "text-[14px] ml-2 font-bold",
-                    isSelected ? "text-white" : "text-[#797979]"
-                  )}
-                >
-                  {user.name}
-                </p>
-              </button>
-
-              {isSelected && <div className="mt-2"></div>}
-            </>
+            <User
+              key={index}
+              isSelected={isSelected}
+              handleClick={handleClick}
+              user={user}
+              index={index}
+            />
           );
         })}
       </div>
+
+      <button
+        className="bg-blue-600 rounded-[5px] text-white text-[15px] w-full py-2 mt-3"
+        onClick={() => open("ADD_USER")}
+      >
+        Add User
+      </button>
     </div>
   );
 }

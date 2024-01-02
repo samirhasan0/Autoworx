@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::get("/task", function () {
         return Inertia\Inertia::render("Task", [
             "tasks" => App\Models\Task::all(),
+            "users" => App\Models\User::all(),
         ]);
     });
     Route::inertia("analytics", "Analytics");
