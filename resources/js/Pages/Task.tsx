@@ -11,17 +11,30 @@ import { useEffect } from "react";
 export default function Task({
   tasks,
   users,
+  auth,
 }: {
   tasks: TaskType[];
   users: User[];
+  auth: {
+    user: User;
+  };
 }) {
   const { setTasks } = useTaskStore();
-  const { setUsers } = useUsersStore();
+  const { setUsers, setCurrentUser } = useUsersStore();
 
   useEffect(() => {
-    setTasks(tasks);
+    // initially task.assigned_users would be string (comma separated)
+    // convert it to array of numbers
+    setTasks(
+      tasks.map((task) => ({
+        ...task,
+        // @ts-ignore
+        assigned_users: task.assigned_users.split(",").map(Number),
+      }))
+    );
     setUsers(users);
-  }, [tasks, users]);
+    setCurrentUser(auth.user);
+  }, [tasks, users, auth]);
 
   return (
     <>

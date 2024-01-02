@@ -5,10 +5,13 @@ import { usePopupStore } from "@/stores/popup";
 import { useUsersStore } from "@/stores/users";
 
 export default function Users() {
-  const { users } = useUsersStore();
+  const { users, current } = useUsersStore();
 
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const { open } = usePopupStore();
+
+  // exclude the current user from the list
+  const usersToShow = users.filter((user) => user.id !== current?.id);
 
   return (
     <div className="bg-white calender-shadow h-[660px] mt-5 rounded-[12px] p-3">
@@ -26,7 +29,7 @@ export default function Users() {
       </form>
 
       <div className="mt-5 h-[490px] overflow-scroll">
-        {users.map((user, index) => {
+        {usersToShow.map((user, index) => {
           const isSelected = selectedUser === index;
 
           function handleClick() {

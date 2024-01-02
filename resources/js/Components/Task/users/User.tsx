@@ -1,7 +1,10 @@
 import { cn } from "@/lib/cn";
+import { TASK_COLOR } from "@/lib/const";
+import { useTaskStore } from "@/stores/tasks";
+import { User } from "@/types";
 import React from "react";
 
-export default function User({
+export default function UserComponent({
   isSelected,
   handleClick,
   user,
@@ -9,9 +12,17 @@ export default function User({
 }: {
   isSelected: boolean;
   handleClick: () => void;
-  user: { name: string; image: string };
+  user: User;
   index: number;
 }) {
+  const { tasks } = useTaskStore();
+
+  console.log(tasks);
+
+  const userTasks = tasks.filter((task) =>
+    task.assigned_users.includes(user.id)
+  );
+
   return (
     <>
       <button
@@ -37,7 +48,23 @@ export default function User({
         </p>
       </button>
 
-      {isSelected && <div className="mt-2"></div>}
+      {isSelected && (
+        <div className="my-3">
+          {userTasks.map((task, index) => (
+            <div className="flex items-center gap-2 mt-2 ml-4" key={index}>
+              <div
+                className="w-[10px] h-[10px] rounded-full"
+                style={{ backgroundColor: TASK_COLOR[task.type] }}
+              ></div>
+              <p className="text-[16px]">{task.title}</p>
+            </div>
+          ))}
+
+          <button className="bg-slate-500 rounded-2xl text-white text-[15px] py-1 mt-3 px-5">
+            + Assign Task
+          </button>
+        </div>
+      )}
     </>
   );
 }

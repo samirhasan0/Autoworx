@@ -5,4 +5,5 @@ export interface TaskType {
   start_time: string;
   end_time: string;
   type: "task" | "appointment" | "event";
+  assigned_users: number[];
 }

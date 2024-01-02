@@ -34,6 +34,7 @@ class TaskController extends Controller
             "start_time" => "required",
             "end_time" => "required",
             "type" => "required|in:" . implode(",", Task::TYPES),
+            "assigned_users" => "string",
         ]);
 
         // Check if the date is in the past

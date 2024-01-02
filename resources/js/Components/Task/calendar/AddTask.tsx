@@ -1,20 +1,35 @@
 import { useForm } from "@inertiajs/react";
 import Popup from "../../Popup";
 import { usePopupStore } from "@/stores/popup";
+import { useUsersStore } from "@/stores/users";
+
+interface TaskForm {
+  title: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  type: string;
+  assigned_users: string;
+}
 
 export default function AddTask() {
   const { data: taskData, close } = usePopupStore();
+  const { users } = useUsersStore();
 
   console.log(taskData.date);
   console.log(taskData.start_time);
 
-  const { data, setData, post, processing, errors, reset } = useForm({
+  const { data, setData, post, processing, errors, reset } = useForm<TaskForm>({
     title: "",
     date: taskData.date,
     start_time: taskData.start_time,
     end_time: taskData.end_time,
     type: "task",
+    assigned_users: "",
   });
+  const { current } = useUsersStore();
+
+  const usersToShow = users.filter((user) => user.id !== current?.id);
 
   const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -125,6 +140,53 @@ export default function AddTask() {
           </select>
           {errors.type && (
             <div className="text-red-500 text-sm">{errors.type}</div>
+          )}
+        </div>
+
+        {/* custom radio. show user name and image (column)*/}
+        <div className="flex flex-col mb-4">
+          <label htmlFor="assigned_users" className="font-bold">
+            Assigned Users
+          </label>
+
+          <div className="flex flex-col p-2 font-bold gap-2 mt-2 h-40 overflow-y-auto">
+            {usersToShow.map((user) => (
+              <label
+                htmlFor={user.id.toString()}
+                key={user.id}
+                className="flex items-center gap-2"
+              >
+                <input
+                  type="checkbox"
+                  name="assigned_users"
+                  id={user.id.toString()}
+                  value={user.id}
+                  onChange={(e) => {
+                    // comma separated string
+                    setData(
+                      "assigned_users",
+                      data.assigned_users.includes(e.target.value)
+                        ? data.assigned_users
+                            .split(",")
+                            .filter((id) => id !== e.target.value)
+                            .join(",")
+                        : data.assigned_users
+                        ? data.assigned_users + "," + e.target.value
+                        : e.target.value
+                    );
+                  }}
+                />
+                <img
+                  src={user.image}
+                  alt={user.name}
+                  className="w-10 h-10 rounded-full"
+                />
+                <span>{user.name}</span>
+              </label>
+            ))}
+          </div>
+          {errors.assigned_users && (
+            <div className="text-red-500 text-sm">{errors.assigned_users}</div>
           )}
         </div>
 

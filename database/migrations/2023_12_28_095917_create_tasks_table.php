@@ -20,6 +20,8 @@ return new class extends Migration
             $table->time('end_time');
             // type: event, appointment, task
             $table->enum('type', ['event', 'appointment', 'task']);
+            // assigned_users
+            $table->string('assigned_users', 100);
             $table->timestamps();
         });
     }
