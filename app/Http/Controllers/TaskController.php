@@ -66,6 +66,8 @@ class TaskController extends Controller
 
         // add user_id to request
         $formFields["user_id"] = auth()->user()->id;
+        // add the current user to the assigned users
+        $formFields["assigned_users"] = auth()->user()->id . "," . $formFields["assigned_users"];
 
         // create the task
         Task::create($formFields);
