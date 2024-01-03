@@ -2,6 +2,7 @@ import { useForm } from "@inertiajs/react";
 import Popup from "../../Popup";
 import { usePopupStore } from "@/stores/popup";
 import { useUsersStore } from "@/stores/users";
+import { ThreeDots } from "react-loader-spinner";
 
 interface TaskForm {
   title: string;
@@ -195,7 +196,11 @@ export default function AddTask() {
             type="submit"
             className="bg-blue-500 text-white py-2 px-10 rounded-md"
           >
-            Add
+            {processing ? (
+              <ThreeDots color="#fff" height={20} width={40} />
+            ) : (
+              "Submit"
+            )}
           </button>
           <button
             type="button"
