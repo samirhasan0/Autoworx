@@ -2,12 +2,18 @@ import { cn } from "@/lib/cn";
 import { TASK_COLOR } from "@/lib/const";
 import { usePopupStore } from "@/stores/popup";
 import { useTaskStore } from "@/stores/tasks";
-import { TaskType } from "@/types/task";
+import { useUsersStore } from "@/stores/users";
 import moment from "moment";
+import { useState } from "react";
+// import calendar and clock icons
+import { HiCalendar, HiClock } from "react-icons/hi";
 
 export default function Week() {
+  const [hoveredTask, setHoveredTask] = useState<number | null>(null);
+
   const { open } = usePopupStore();
   const { tasks } = useTaskStore();
+  const { users } = useUsersStore();
 
   // Get the current date
   const today = new Date();
@@ -91,89 +97,172 @@ export default function Week() {
   console.log("Week Tasks: ", weekTasks);
 
   return (
-    <div className="relative border-[#797979] w-[1116px] border-l border-t border-b h-[90%] mt-3 overflow-scroll">
-      {rows.map((row: any, rowIndex: number) => (
-        <div
-          className={cn(
-            "flex h-[45px] border-[#797979]",
-            rowIndex !== rows.length - 1 && "border-b"
-          )}
-          key={rowIndex}
-        >
-          {row.map((column: any, columnIndex: number) => {
-            const isHeaderCell = columnIndex === 0 || rowIndex === 0;
-            const cellWidth =
-              columnIndex === 0
-                ? "min-w-[100px] max-w-[100px]"
-                : "min-w-[145px] max-w-[145px]";
-            const fontSize =
-              rowIndex === 0 ? "font-bold text-[19px]" : "text-[17px]";
-            const cellClasses = cn(
-              "border-r border-[#797979] h-full text-[#797979] flex justify-center items-center",
-              cellWidth,
-              fontSize
-            );
-
-            function handleClick() {
-              const date = formatDate(
-                new Date(
-                  today.setDate(
-                    today.getDate() - today.getDay() + columnIndex - 1
-                  )
-                )
+    <>
+      <div
+        className={cn(
+          "relative border-[#797979] w-[1116px] border-l border-t border-b h-[90%] mt-3 overflow-auto",
+          // turn off scroll
+          hoveredTask && "overflow-hidden"
+        )}
+      >
+        {rows.map((row: any, rowIndex: number) => (
+          <div
+            className={cn(
+              "flex h-[45px] border-[#797979]",
+              rowIndex !== rows.length - 1 && "border-b"
+            )}
+            key={rowIndex}
+          >
+            {row.map((column: any, columnIndex: number) => {
+              const isHeaderCell = columnIndex === 0 || rowIndex === 0;
+              const cellWidth =
+                columnIndex === 0
+                  ? "min-w-[100px] max-w-[100px]"
+                  : "min-w-[145px] max-w-[145px]";
+              const fontSize =
+                rowIndex === 0 ? "font-bold text-[19px]" : "text-[17px]";
+              const cellClasses = cn(
+                "border-r border-[#797979] h-full text-[#797979] flex justify-center items-center",
+                cellWidth,
+                fontSize
               );
-              const start_time = formatTime(row[0]);
-              open("ADD_TASK", { date, start_time });
-            }
 
-            return (
-              <button
-                key={columnIndex}
-                className={cellClasses}
-                disabled={isHeaderCell}
-                onClick={isHeaderCell ? undefined : handleClick}
-              >
-                {column}
-              </button>
-            );
-          })}
-        </div>
-      ))}
+              function handleClick() {
+                const date = formatDate(
+                  new Date(
+                    today.setDate(
+                      today.getDate() - today.getDay() + columnIndex - 1
+                    )
+                  )
+                );
+                const start_time = formatTime(row[0]);
+                open("ADD_TASK", { date, start_time });
+              }
 
-      {weekTasks.map((task) => {
-        const left = `${145 * task.columnIndex + 100}px`;
-        const top = `${45 * task.rowStartIndex + 45}px`;
-        const height = `${45 * (task.rowEndIndex - task.rowStartIndex + 1)}px`;
-        const width = "145px";
-        const backgroundColor = TASK_COLOR[task.type];
+              return (
+                <button
+                  key={columnIndex}
+                  className={cellClasses}
+                  disabled={isHeaderCell}
+                  onClick={isHeaderCell ? undefined : handleClick}
+                >
+                  {column}
+                </button>
+              );
+            })}
+          </div>
+        ))}
 
-        // Define a function to truncate the task title based on the height
-        const truncateTitle = (title: string, maxLength: number) => {
-          return title.length > maxLength
-            ? title.slice(0, maxLength) + "..."
-            : title;
-        };
+        {weekTasks.map((task, index) => {
+          const left = `${145 * task.columnIndex + 100}px`;
+          const top = `${45 * task.rowStartIndex + 45}px`;
+          const height = `${
+            45 * (task.rowEndIndex - task.rowStartIndex + 1)
+          }px`;
+          const width = "145px";
+          const backgroundColor = TASK_COLOR[task.type];
 
-        // Define the maximum title length based on the height
-        const maxTitleLength =
-          height === "45px" ? 15 : height === "90px" ? 30 : task.title.length;
+          // Define a function to truncate the task title based on the height
+          const truncateTitle = (title: string, maxLength: number) => {
+            return title.length > maxLength
+              ? title.slice(0, maxLength) + "..."
+              : title;
+          };
+
+          // Define the maximum title length based on the height
+          const maxTitleLength =
+            height === "45px" ? 15 : height === "90px" ? 30 : task.title.length;
+
+          return (
+            <div
+              className="absolute top-0 rounded-lg border"
+              style={{
+                left,
+                top,
+                height,
+                backgroundColor,
+                width,
+              }}
+              key={index}
+              onMouseEnter={() => setHoveredTask(index)}
+              onMouseLeave={() => setHoveredTask(null)}
+            >
+              <p className="text-white p-1 text-[17px] z-30">
+                {truncateTitle(task.title, maxTitleLength)}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      {weekTasks.map((task, index) => {
+        const MOVE_FROM_TOP = 70;
+        const height = 300;
+        const left = `${145 * task.columnIndex + 100 - 120}px`;
+        const top = `${
+          45 * task.rowStartIndex + 45 + MOVE_FROM_TOP - height
+        }px`;
 
         return (
           <div
-            className={`border text-white absolute p-1 rounded-lg text-[17px] top-0 z-10`}
+            className={cn(
+              "absolute w-[400px] bg-white border border-slate-400 rounded-md p-3 transition-all duration-300"
+              // hoveredTask === index ? "opacity-100 z-40" : "opacity-0 -z-10"
+            )}
             style={{
               left,
               top,
               height,
-              backgroundColor,
-              maxWidth: width,
-              minWidth: width,
+              opacity: hoveredTask === index ? 1 : 0,
+              zIndex: hoveredTask === index ? 40 : -10,
             }}
+            key={index}
+            onMouseEnter={() => setHoveredTask(index)}
+            onMouseLeave={() => setHoveredTask(null)}
           >
-            {truncateTitle(task.title, maxTitleLength)}
+            <p className="font-bold text-[19px] text-slate-800">{task.title}</p>
+            <hr />
+
+            <div className="flex justify-between items-center mt-2">
+              <p className="text-[17px] text-slate-800 flex items-center">
+                <HiCalendar />
+                {moment(task.date).format("MMM DD, YYYY")}
+              </p>
+
+              <p className="text-[17px] text-slate-800 flex items-center">
+                <HiClock />
+                {moment(task.start_time, "HH:mm").format("hh:mm A")}
+                <span className="mx-1">-</span>
+                <HiClock />
+                {moment(task.end_time, "HH:mm").format("hh:mm A")}
+              </p>
+            </div>
+
+            {/* Show users */}
+            <div className="mt-3">
+              {task.assigned_users.map((user_id: number) => {
+                const user = users.find((user) => user.id === user_id);
+                if (!user) return null;
+                return (
+                  <div
+                    className="flex items-center mt-2 bg-[#F8F9FA] py-3 px-1"
+                    key={user.id}
+                  >
+                    <img
+                      src={user.image}
+                      alt="avatar"
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <p className="text-[18px] font-bold text-slate-800 ml-2">
+                      {user.name}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         );
       })}
-    </div>
+    </>
   );
 }
