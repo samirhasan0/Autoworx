@@ -196,7 +196,8 @@ export default function Week() {
       </div>
 
       {weekTasks.map((task, index) => {
-        const MOVE_FROM_TOP = 70;
+        const isRow0 = task.rowStartIndex === 0;
+        const MOVE_FROM_TOP = isRow0 ? 120 : 70;
         const height = 300;
         const left = `${145 * task.columnIndex + 100 - 120}px`;
         const top = `${
