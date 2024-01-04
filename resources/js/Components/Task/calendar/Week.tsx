@@ -220,16 +220,16 @@ export default function Week() {
             onMouseEnter={() => setHoveredTask(index)}
             onMouseLeave={() => setHoveredTask(null)}
           >
-            <p className="font-bold text-[19px] text-slate-800">{task.title}</p>
+            <p className="font-bold text-[19px] text-slate-600">{task.title}</p>
             <hr />
 
             <div className="flex justify-between items-center mt-2">
-              <p className="text-[17px] text-slate-800 flex items-center">
+              <p className="text-[17px] text-slate-600 flex items-center">
                 <HiCalendar />
                 {moment(task.date).format("MMM DD, YYYY")}
               </p>
 
-              <p className="text-[17px] text-slate-800 flex items-center">
+              <p className="text-[17px] text-slate-600 flex items-center">
                 <HiClock />
                 {moment(task.start_time, "HH:mm").format("hh:mm A")}
                 <span className="mx-1">-</span>
@@ -253,7 +253,7 @@ export default function Week() {
                       alt="avatar"
                       className="w-10 h-10 rounded-full"
                     />
-                    <p className="text-[18px] font-bold text-slate-800 ml-2">
+                    <p className="text-[18px] font-bold text-slate-600 ml-2">
                       {user.name}
                     </p>
                   </div>

@@ -1,8 +1,8 @@
 import { cn } from "@/lib/cn";
 import { TASK_COLOR } from "@/lib/const";
+import { usePopupStore } from "@/stores/popup";
 import { useTaskStore } from "@/stores/tasks";
 import { User } from "@/types";
-import React from "react";
 
 export default function UserComponent({
   isSelected,
@@ -16,8 +16,7 @@ export default function UserComponent({
   index: number;
 }) {
   const { tasks } = useTaskStore();
-
-  console.log(tasks);
+  const { open } = usePopupStore();
 
   const userTasks = tasks.filter((task) =>
     task.assigned_users.includes(user.id)
@@ -60,7 +59,15 @@ export default function UserComponent({
             </div>
           ))}
 
-          <button className="bg-slate-500 rounded-2xl text-white text-[15px] py-1 mt-3 px-5">
+          <button
+            className="bg-slate-500 rounded-2xl text-white text-[15px] py-1 mt-3 px-5"
+            onClick={() =>
+              open("ASSIGN_TASK", {
+                assigned_users: user.id.toString(),
+                only_one_user: true,
+              })
+            }
+          >
             + Assign Task
           </button>
         </div>

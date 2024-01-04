@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -98,6 +100,61 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
         //
+    }
+
+    /**
+     * Assign tasks to a user. 
+     */
+    public function assignTasks(Request $request)
+    {
+
+
+        // validate the request
+        $formFields = $request->validate([
+            "user" => "required|exists:users,id",
+            "tasks" => "required|array", // [[task_id, boolean], [task_id, boolean]]
+        ]);
+
+
+        // get the user
+        $user = User::find($formFields["user"]);
+
+        // loop through the tasks
+        foreach ($formFields["tasks"] as $taskData) {
+            // get the task
+            $task = Task::find($taskData[0]);
+            $shouldAssign = $taskData[1];
+
+            // check if the task exists
+            if (!$task) {
+                return redirect()->back()->withErrors(["tasks" => "One or more tasks do not exist"]);
+            }
+
+            // convert assigned_users to an array
+            $assignedUsers = explode(',', $task->assigned_users);
+
+            // add or remove the user from these tasks
+            if ($shouldAssign) {
+                // check if the user is already assigned to the task
+                // if not, assign the user to the task. else nothing
+                if (!in_array($user->id, $assignedUsers)) {
+                    $assignedUsers[] = $user->id;
+                }
+            } else {
+                // check if the user is already assigned to the task
+                // if yes, remove the user from the task. else nothing
+                if (($key = array_search($user->id, $assignedUsers)) !== false) {
+                    unset($assignedUsers[$key]);
+                }
+            }
+
+            // update the assigned_users field
+            $task->assigned_users = implode(',', $assignedUsers);
+            $task->save();
+        }
+
+        // redirect to the user page
+        return redirect()->back();
     }
 
     /**

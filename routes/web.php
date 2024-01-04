@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::inertia("invoice", "Invoice");
 
     Route::post("/task", [TaskController::class, "store"])->name("task.store");
+    Route::put("/task", [TaskController::class, "assignTasks"])->name("task.assign");
 });
 
 
