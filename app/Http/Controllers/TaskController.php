@@ -36,8 +36,8 @@ class TaskController extends Controller
             "start_time" => "required",
             "end_time" => "required",
             "type" => "required|in:" . implode(",", Task::TYPES),
-            "assigned_users" => "string",
         ]);
+        $formFields["assigned_users"] = $request->input("assigned_users", "");
 
         // Check if the date is in the past
         if (strtotime($formFields["date"]) < strtotime(date("Y-m-d"))) {

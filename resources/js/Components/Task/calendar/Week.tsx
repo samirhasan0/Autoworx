@@ -171,7 +171,7 @@ export default function Week() {
 
           // Define the maximum title length based on the height
           const maxTitleLength =
-            height === "45px" ? 15 : height === "90px" ? 30 : task.title.length;
+            height === "45px" ? 13 : height === "90px" ? 30 : task.title.length;
 
           return (
             <div
@@ -207,7 +207,6 @@ export default function Week() {
           <div
             className={cn(
               "absolute w-[400px] bg-white border border-slate-400 rounded-md p-3 transition-all duration-300"
-              // hoveredTask === index ? "opacity-100 z-40" : "opacity-0 -z-10"
             )}
             style={{
               left,
