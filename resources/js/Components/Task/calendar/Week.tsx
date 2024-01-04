@@ -9,7 +9,7 @@ import { useState } from "react";
 import { HiCalendar, HiClock } from "react-icons/hi";
 
 export default function Week() {
-  const [hoveredTask, setHoveredTask] = useState<number | null>(null);
+  const [hoveredTask, setHoveredTask] = useState<number | null>(0);
 
   const { open } = usePopupStore();
   const { tasks } = useTaskStore();
@@ -239,7 +239,7 @@ export default function Week() {
             </div>
 
             {/* Show users */}
-            <div className="mt-3">
+            <div className="mt-3 h-[12rem] overflow-auto">
               {task.assigned_users.map((user_id: number) => {
                 const user = users.find((user) => user.id === user_id);
                 if (!user) return null;
