@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\User;
+use App\Http\Controllers\GoogleCalendarController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -38,6 +39,7 @@ class TaskController extends Controller
             "type" => "required|in:" . implode(",", Task::TYPES),
         ]);
         $formFields["assigned_users"] = $request->input("assigned_users", "");
+        $formFields["timezone"] = $request->input("timezone", "");
 
         // Check if the date is in the past
         if (strtotime($formFields["date"]) < strtotime(date("Y-m-d"))) {
@@ -72,7 +74,10 @@ class TaskController extends Controller
         $formFields["assigned_users"] = auth()->user()->id . "," . $formFields["assigned_users"];
 
         // create the task
-        Task::create($formFields);
+        $task = Task::create($formFields);
+
+        // create the event in google calendar
+        GoogleCalendarController::createEvent($task);
 
         // redirect to task page
         return redirect()->back();

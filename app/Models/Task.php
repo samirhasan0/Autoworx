@@ -24,7 +24,8 @@ class Task extends Model
         'end_time',
         'type',
         'user_id',
-        "assigned_users"
+        "assigned_users",
+        "timezone"
     ];
 
 

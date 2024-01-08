@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GoogleCalendarController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -9,6 +10,12 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Models\OauthToken;
+use App\Providers\RouteServiceProvider;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Route;
 
 Route::post('register', [RegisteredUserController::class, 'store'])->name('register');
@@ -56,4 +63,27 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    // Redirec to Google OAuth2 consent screen
+    Route::get('/redirect-to-google', function () {
+        $googleClient = GoogleCalendarController::initializeGoogleClient();
+        $googleClient->addScope(Google_Service_Calendar::CALENDAR_EVENTS);
+        $googleClient->setAccessType('offline');
+        $googleClient->setPrompt('consent');
+
+        $authUrl = $googleClient->createAuthUrl();
+
+        return redirect($authUrl);
+    })->name('auth.google');
+
+    // Handle Google OAuth2 callback
+    Route::get('/google-oauth2callback', function (Request $request) {
+        $googleClient = GoogleCalendarController::initializeGoogleClient();
+        $googleToken = $googleClient->fetchAccessTokenWithAuthCode($request->code);
+
+        GoogleCalendarController::storeUserToken($googleToken);
+        GoogleCalendarController::getEventsAndStore();
+
+        return redirect(RouteServiceProvider::HOME);
+    });
 });

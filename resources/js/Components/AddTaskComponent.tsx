@@ -10,6 +10,7 @@ interface TaskForm {
   end_time: string;
   type: string;
   assigned_users: string;
+  timezone: string;
 }
 
 export default function AddTaskComponent({
@@ -27,6 +28,7 @@ export default function AddTaskComponent({
     end_time: taskData.end_time,
     type: "task",
     assigned_users: taskData.assigned_users || "",
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   });
 
   const usersToShow = users.filter((user) => user.id !== current?.id);

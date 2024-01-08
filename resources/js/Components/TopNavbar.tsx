@@ -16,6 +16,14 @@ export default function TopNavbar() {
         />
       </form>
 
+      {/* Google Auth Button */}
+      <a
+        href={route("auth.google")}
+        className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
+      >
+        Connect Google Calendar
+      </a>
+
       {/* Icons */}
       <TopNavbarIcons />
     </div>

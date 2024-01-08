@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('type', ['event', 'appointment', 'task']);
             // assigned_users
             $table->string('assigned_users', 100);
+            $table->string('timezone', 100);
             $table->timestamps();
         });
     }

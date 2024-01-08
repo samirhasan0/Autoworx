@@ -1,5 +1,5 @@
 import { useEffect, FormEventHandler } from "react";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 
 export default function Login() {
   const { data, setData, post, processing, errors, reset } = useForm({
@@ -70,9 +70,16 @@ export default function Login() {
           )}
         </div>
 
+        <Link
+          href={route("register")}
+          className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-center block mt-4"
+        >
+          Don't have an account? Register
+        </Link>
+
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded-md mx-auto block"
+          className="px-4 mt-5 py-2 bg-blue-500 text-white rounded-md mx-auto block"
         >
           Submit
         </button>
