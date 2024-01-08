@@ -40,6 +40,18 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    // Redirect to login with Google
+    Route::get(
+        '/redirect-to-google',
+        [AuthenticatedSessionController::class, 'redirectToGoogle']
+    )->name('auth.google');
+
+    // Handle Google OAuth2 callback
+    Route::get(
+        '/auth/google/callback',
+        [AuthenticatedSessionController::class, 'handleGoogleCallback']
+    );
 });
 
 Route::middleware('auth')->group(function () {
@@ -61,11 +73,11 @@ Route::middleware('auth')->group(function () {
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+    Route::get('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 
-    // Redirec to Google OAuth2 consent screen
-    Route::get('/redirect-to-google', function () {
+    // Redirect to Google OAuth2 consent screen
+    Route::get('/redirect-to-google-calendar', function () {
         $googleClient = GoogleCalendarController::initializeGoogleClient();
         $googleClient->addScope(Google_Service_Calendar::CALENDAR_EVENTS);
         $googleClient->setAccessType('offline');
@@ -74,10 +86,10 @@ Route::middleware('auth')->group(function () {
         $authUrl = $googleClient->createAuthUrl();
 
         return redirect($authUrl);
-    })->name('auth.google');
+    })->name('auth.google.calendar');
 
-    // Handle Google OAuth2 callback
-    Route::get('/google-oauth2callback', function (Request $request) {
+    // Handle Google Calendar OAuth2 callback
+    Route::get('/auth/google/callback-calendar', function (Request $request) {
         $googleClient = GoogleCalendarController::initializeGoogleClient();
         $googleToken = $googleClient->fetchAccessTokenWithAuthCode($request->code);
 

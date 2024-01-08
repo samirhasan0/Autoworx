@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('image')->default('/images/default.png');
             $table->string('password');
+            $table->enum('provider', ['google', 'apple', 'email'])->default('email');
             $table->rememberToken();
             $table->timestamps();
         });

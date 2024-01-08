@@ -1,5 +1,6 @@
 import { useEffect, FormEventHandler } from "react";
 import { Head, Link, useForm } from "@inertiajs/react";
+import { FaGoogle } from "react-icons/fa";
 
 export default function Register() {
   const { data, setData, post, processing, errors, reset } = useForm({
@@ -114,6 +115,15 @@ export default function Register() {
         >
           Already registered?
         </Link>
+
+        {/* Google Authentication */}
+        <a
+          href={route("auth.google")}
+          className="border mx-auto w-[200px] text-center mt-4 py-2 rounded-md hover:bg-gray-100 flex items-center justify-center"
+        >
+          <FaGoogle className="inline-block mr-2 text-[#DB4437]" />
+          Sign up using Google
+        </a>
 
         <button className="px-4 py-2 mt-5 bg-blue-500 text-white rounded-md mx-auto block">
           Register

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
+use Laravel\Socialite\Facades\Socialite;
 
 class GoogleCalendarController extends Controller
 {
@@ -116,8 +117,7 @@ class GoogleCalendarController extends Controller
         $client = new Google_Client();
         $client->setClientId(env('GOOGLE_CLIENT_ID'));
         $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
-        $client->setRedirectUri(env('GOOGLE_REDIRECT_CALLBACK'));
-
+        $client->setRedirectUri(env('GOOGLE_REDIRECT_CALLBACK_CALENDAR'));
 
         return $client;
     }

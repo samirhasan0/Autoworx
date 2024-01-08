@@ -18,7 +18,7 @@ export default function TopNavbar() {
 
       {/* Google Auth Button */}
       <a
-        href={route("auth.google")}
+        href={route("auth.google.calendar")}
         className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
       >
         Connect Google Calendar
