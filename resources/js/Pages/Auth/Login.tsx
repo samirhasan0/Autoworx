@@ -1,6 +1,7 @@
 import { useEffect, FormEventHandler } from "react";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { FaGoogle } from "react-icons/fa";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Login() {
   const { data, setData, post, processing, errors, reset } = useForm({
@@ -89,9 +90,13 @@ export default function Login() {
 
         <button
           type="submit"
-          className="px-4 mt-5 py-2 bg-blue-500 text-white rounded-md mx-auto block"
+          className="bg-blue-500 text-white py-2 px-10 rounded-md mx-auto block mt-4"
         >
-          Submit
+          {processing ? (
+            <ThreeDots color="#fff" height={20} width={40} />
+          ) : (
+            "Submit"
+          )}
         </button>
       </form>
     </>

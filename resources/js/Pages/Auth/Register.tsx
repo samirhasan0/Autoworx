@@ -1,6 +1,7 @@
 import { useEffect, FormEventHandler } from "react";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { FaGoogle } from "react-icons/fa";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Register() {
   const { data, setData, post, processing, errors, reset } = useForm({
@@ -125,8 +126,15 @@ export default function Register() {
           Sign up using Google
         </a>
 
-        <button className="px-4 py-2 mt-5 bg-blue-500 text-white rounded-md mx-auto block">
-          Register
+        <button
+          type="submit"
+          className="bg-blue-500 text-white py-2 px-10 rounded-md mx-auto block mt-4"
+        >
+          {processing ? (
+            <ThreeDots color="#fff" height={20} width={40} />
+          ) : (
+            "Submit"
+          )}
         </button>
       </form>
     </>
