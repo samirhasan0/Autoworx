@@ -4,16 +4,32 @@ import { usePopupStore } from "@/stores/popup";
 import { useTaskStore } from "@/stores/tasks";
 import { useUsersStore } from "@/stores/users";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // import calendar and clock icons
 import { HiCalendar, HiClock } from "react-icons/hi";
 
 export default function Week() {
-  const [hoveredTask, setHoveredTask] = useState<number | null>(0);
+  const [hoveredTask, setHoveredTask] = useState<number | null>(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const scrollableDivRef = useRef<HTMLDivElement>(null);
 
   const { open } = usePopupStore();
   const { tasks } = useTaskStore();
   const { users } = useUsersStore();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(scrollableDivRef.current!.scrollTop);
+    };
+
+    scrollableDivRef.current &&
+      scrollableDivRef.current.addEventListener("scroll", handleScroll);
+
+    return () => {
+      scrollableDivRef.current &&
+        scrollableDivRef.current.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   // Get the current date
   const today = new Date();
@@ -94,16 +110,11 @@ export default function Week() {
       return { ...task, columnIndex, rowStartIndex, rowEndIndex };
     });
 
-  console.log("Week Tasks: ", weekTasks);
-
   return (
     <>
       <div
-        className={cn(
-          "relative border-[#797979] w-[1116px] border-l border-t border-b h-[90%] mt-3 overflow-auto",
-          // turn off scroll
-          hoveredTask && "overflow-hidden"
-        )}
+        className="relative border-[#797979] w-[1116px] border-l border-t border-b h-[90%] mt-3 overflow-auto"
+        ref={scrollableDivRef}
       >
         {rows.map((row: any, rowIndex: number) => (
           <div
@@ -197,11 +208,11 @@ export default function Week() {
 
       {weekTasks.map((task, index) => {
         const isRow0 = task.rowStartIndex === 0;
-        const MOVE_FROM_TOP = isRow0 ? 120 : 70;
+        const MOVE_FROM_TOP = isRow0 ? 130 : 70;
         const height = 300;
         const left = `${145 * task.columnIndex + 100 - 120}px`;
         const top = `${
-          45 * task.rowStartIndex + 45 + MOVE_FROM_TOP - height
+          45 * task.rowStartIndex + 45 - scrollPosition + MOVE_FROM_TOP - height
         }px`;
 
         return (

@@ -14,7 +14,7 @@ export default function Users() {
   const usersToShow = users.filter((user) => user.id !== current?.id);
 
   return (
-    <div className="bg-white calender-shadow h-[660px] mt-5 rounded-[12px] p-3">
+    <div className="bg-white app-shadow h-[660px] mt-5 rounded-[12px] p-3">
       <h2 className="text-[#797979] text-[16px]">User List</h2>
 
       <form className="flex items-center justify-center gap-2 mt-3">

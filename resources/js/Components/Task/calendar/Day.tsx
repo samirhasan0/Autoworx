@@ -5,15 +5,31 @@ import { useTaskStore } from "@/stores/tasks";
 import { useUsersStore } from "@/stores/users";
 import { TaskType } from "@/types/task";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HiCalendar, HiClock } from "react-icons/hi";
 
 export default function Day() {
   const [hoveredTask, setHoveredTask] = useState<number | null>(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const scrollableDivRef = useRef<HTMLDivElement>(null);
 
   const { open } = usePopupStore();
   const { tasks } = useTaskStore();
   const { users } = useUsersStore();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(scrollableDivRef.current!.scrollTop);
+    };
+
+    scrollableDivRef.current &&
+      scrollableDivRef.current.addEventListener("scroll", handleScroll);
+
+    return () => {
+      scrollableDivRef.current &&
+        scrollableDivRef.current.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const rows = [
     "All Day",
@@ -57,11 +73,8 @@ export default function Day() {
   return (
     <>
       <div
-        className={cn(
-          "relative border-[#797979] border h-[90%] mt-3 overflow-auto",
-          // turn off the scroll
-          hoveredTask && "overflow-hidden"
-        )}
+        className="relative border-[#797979] border h-[90%] mt-3 overflow-auto"
+        ref={scrollableDivRef}
       >
         {rows.map((row, i) => (
           <button
@@ -140,10 +153,13 @@ export default function Day() {
       </div>
 
       {dayTasks.map((task, index) => {
-        const MOVE_FROM_TOP = 70;
+        const firstTask = task.rowStartIndex === 1;
+        const MOVE_FROM_TOP = firstTask ? 90 : 30;
         const height = 300;
         const left = "130px";
-        const top = `${task.rowStartIndex * 45 + MOVE_FROM_TOP - height}px`;
+        const top = `${
+          45 * task.rowStartIndex + 45 - scrollPosition + MOVE_FROM_TOP - height
+        }px`;
 
         return (
           <div
