@@ -10,7 +10,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <TopNavbar />
         <PopupState />
 
-        <main className="bg-[#F8F9FA] h-[93vh] p-7 relative">{children}</main>
+        <main className="bg-[#F8F9FA] h-[93vh] p-2 px-7 relative">
+          {children}
+        </main>
       </div>
     </div>
   );
