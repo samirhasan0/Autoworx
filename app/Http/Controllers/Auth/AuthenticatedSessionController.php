@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\GoogleCalendarController;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Carbon\Carbon;
+use App\Models\OauthToken;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,10 +57,26 @@ class AuthenticatedSessionController extends Controller
 
     /**
      * Redirect to login with Google   
+     * Grant Calendar API access with personal Google account
      */
     public function redirectToGoogle(): RedirectResponse
     {
-        return Socialite::driver('google')->redirect();
+        // initialize google client
+        $googleClient = GoogleCalendarController::initializeGoogleClient(env('GOOGLE_REDIRECT_CALLBACK'));
+        // scope for calendar events
+        $googleClient->addScope('https://www.googleapis.com/auth/calendar.events');
+        // scope for user info
+        $googleClient->addScope('https://www.googleapis.com/auth/userinfo.profile');
+        // scope for user email
+        $googleClient->addScope('https://www.googleapis.com/auth/userinfo.email');
+        $googleClient->setAccessType('offline');
+        $googleClient->setPrompt('consent');
+
+        // get auth url
+        $authUrl = $googleClient->createAuthUrl();
+
+        // redirect to auth url
+        return redirect($authUrl);
     }
 
     /**
@@ -65,20 +84,36 @@ class AuthenticatedSessionController extends Controller
      */
     public function handleGoogleCallback(): RedirectResponse
     {
-        $googleUser = Socialite::driver('google')->user();
+        // initialize google client
+        $googleClient = GoogleCalendarController::initializeGoogleClient(env('GOOGLE_REDIRECT_CALLBACK'));
+        // request access and refresh token
+        $googleToken = $googleClient->fetchAccessTokenWithAuthCode(request()->code);
 
+        // get user
+        $oAuth2 = new \Google_Service_Oauth2($googleClient);
+        $userInfo = $oAuth2->userinfo->get();
+
+        // check if user exists
+        // if not, create user
         $user = User::firstOrCreate(
-            ['email' => $googleUser->getEmail()],
+            ['email' => $userInfo->email],
             [
-                'name' => $googleUser->getName(),
-                'password' => Hash::make(str::random(24)),
+                'name' => $userInfo->name,
+                'password' => Hash::make(Str::random(24)),
                 'provider' => 'google',
-                'image' => $googleUser->avatar,
+                'image' => $userInfo->picture,
             ]
         );
 
+        // login user
         Auth::login($user, true);
 
+        // store user token
+        GoogleCalendarController::storeUserToken($googleToken);
+        // get events and store
+        GoogleCalendarController::getEventsAndStore();
+
+        // redirect to home
         return redirect(RouteServiceProvider::HOME);
     }
 }

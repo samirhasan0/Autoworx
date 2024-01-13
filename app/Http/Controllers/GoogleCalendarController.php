@@ -112,16 +112,15 @@ class GoogleCalendarController extends Controller
     }
 
     // Initialize the Google Client with secret keys and user's token
-    public static function initializeGoogleClient()
+    public static function initializeGoogleClient($redirectUri = null)
     {
         $client = new Google_Client();
         $client->setClientId(env('GOOGLE_CLIENT_ID'));
         $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
-        $client->setRedirectUri(env('GOOGLE_REDIRECT_CALLBACK_CALENDAR'));
+        $client->setRedirectUri($redirectUri ?? env('GOOGLE_REDIRECT_CALLBACK_CALENDAR'));
 
         return $client;
     }
-
 
     // Get the Google Calendar event object
     public static function getGoogleCalendarEvent($task, $user)

@@ -41,7 +41,7 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
 
-    // Redirect to login with Google
+    // Redirect to Google OAuth2 consent screen
     Route::get(
         '/redirect-to-google',
         [AuthenticatedSessionController::class, 'redirectToGoogle']
@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function () {
     // Redirect to Google OAuth2 consent screen
     Route::get('/redirect-to-google-calendar', function () {
         $googleClient = GoogleCalendarController::initializeGoogleClient();
-        $googleClient->addScope(Google_Service_Calendar::CALENDAR_EVENTS);
+        $googleClient->addScope('https://www.googleapis.com/auth/calendar.events');
         $googleClient->setAccessType('offline');
         $googleClient->setPrompt('consent');
 
