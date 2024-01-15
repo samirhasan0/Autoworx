@@ -14,7 +14,7 @@ class OauthToken extends Model
         'provider',
         'access_token',
         'refresh_token',
-        'expires_at',
+        'expires_in',
     ];
 
     public function user()
