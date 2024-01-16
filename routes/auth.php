@@ -92,6 +92,11 @@ Route::middleware('auth')->group(function () {
 
     // Handle Google Calendar OAuth2 callback
     Route::get('/auth/google/callback-calendar', function (Request $request) {
+        // Check if any errors
+        if ($request->error) {
+            return redirect(RouteServiceProvider::HOME);
+        }
+
         $googleClient = GoogleCalendarController::initializeGoogleClient();
         $googleToken = $googleClient->fetchAccessTokenWithAuthCode($request->code);
 

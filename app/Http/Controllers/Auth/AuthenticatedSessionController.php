@@ -82,8 +82,13 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle Google OAuth2 callback    
      */
-    public function handleGoogleCallback(): RedirectResponse
+    public function handleGoogleCallback(Request $request): RedirectResponse
     {
+        // Check if any errors
+        if ($request->error) {
+            return redirect(RouteServiceProvider::LOGIN);
+        }
+
         // initialize google client
         $googleClient = GoogleCalendarController::initializeGoogleClient(env('GOOGLE_REDIRECT_CALLBACK'));
         // request access and refresh token
