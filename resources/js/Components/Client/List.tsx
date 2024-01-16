@@ -1,11 +1,10 @@
-import { useLastSegment } from "@/hooks/useLastSegment";
 import { cn } from "@/lib/cn";
 import { Link, usePage } from "@inertiajs/react";
 
 export default function List() {
-  const id = parseInt(useLastSegment());
   const { props } = usePage();
   const users = props.users as any[]; // TODO: type this
+  const id = props.id;
 
   console.log("users: ", users);
 

@@ -1,7 +1,14 @@
 import { ImSearch } from "react-icons/im";
 import TopNavbarIcons from "./TopNavbarIcons";
+import { usePage } from "@inertiajs/react";
 
 export default function TopNavbar() {
+  const { props } = usePage();
+  const { hasGoogleCalendar, hasCalendly } = props;
+
+  console.log("hasGoogleCalendar: ", hasGoogleCalendar);
+  console.log("hasCalendly: ", hasCalendly);
+
   return (
     <div className="h-[7vh] flex items-center p-5 justify-between pr-10">
       <form className="flex items-center">
@@ -17,20 +24,24 @@ export default function TopNavbar() {
       </form>
 
       {/* Google Auth Button */}
-      <a
-        href={route("auth.google.calendar")}
-        className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
-      >
-        Connect Google Calendar
-      </a>
+      {!hasGoogleCalendar && (
+        <a
+          href={route("auth.google.calendar")}
+          className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
+        >
+          Connect Google Calendar
+        </a>
+      )}
 
       {/* Calendly Auth Button */}
-      <a
-        href={route("auth.calendly")}
-        className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
-      >
-        Connect Calendly
-      </a>
+      {!hasCalendly && (
+        <a
+          href={route("auth.calendly")}
+          className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
+        >
+          Connect Calendly
+        </a>
+      )}
 
       {/* Icons */}
       <TopNavbarIcons />
