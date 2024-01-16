@@ -79,32 +79,13 @@ Route::middleware('auth')->group(function () {
         ->name('logout');
 
     // Redirect to Google OAuth2 consent screen
-    Route::get('/redirect-to-google-calendar', function () {
-        $googleClient = GoogleCalendarController::initializeGoogleClient();
-        $googleClient->addScope('https://www.googleapis.com/auth/calendar.events');
-        $googleClient->setAccessType('offline');
-        $googleClient->setPrompt('consent');
-
-        $authUrl = $googleClient->createAuthUrl();
-
-        return redirect($authUrl);
-    })->name('auth.google.calendar');
+    Route::get(
+        '/redirect-to-google-calendar',
+        [GoogleCalendarController::class, 'redirectOauth']
+    )->name('auth.google.calendar');
 
     // Handle Google Calendar OAuth2 callback
-    Route::get('/auth/google/callback-calendar', function (Request $request) {
-        // Check if any errors
-        if ($request->error) {
-            return redirect(RouteServiceProvider::HOME);
-        }
-
-        $googleClient = GoogleCalendarController::initializeGoogleClient();
-        $googleToken = $googleClient->fetchAccessTokenWithAuthCode($request->code);
-
-        GoogleCalendarController::storeUserToken($googleToken);
-        GoogleCalendarController::getEventsAndStore();
-
-        return redirect(RouteServiceProvider::HOME);
-    });
+    Route::get('/auth/google/callback-calendar', [GoogleCalendarController::class, 'handleOauth']);
 
     // Redirect to Calendly OAuth2 consent screen
     Route::get('/redirect-to-calendly', [CalendlyController::class, 'redirectOauth'])->name('auth.calendly');

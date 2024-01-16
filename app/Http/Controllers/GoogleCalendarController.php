@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\OauthToken;
 use App\Models\Task;
 use App\Models\User;
+use App\Providers\RouteServiceProvider;
 use Google_Client;
 use Google_Service_Calendar;
 use Google_Service_Calendar_Event;
@@ -17,6 +18,34 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GoogleCalendarController extends Controller
 {
+    public static function redirectOauth(Request $request)
+    {
+        $googleClient = self::initializeGoogleClient();
+        $googleClient->addScope('https://www.googleapis.com/auth/calendar.events');
+        $googleClient->setAccessType('offline');
+        $googleClient->setPrompt('consent');
+
+        $authUrl = $googleClient->createAuthUrl();
+
+        return redirect($authUrl);
+    }
+
+    public static function handleOauth(Request $request)
+    {
+        // Check if any errors
+        if ($request->error) {
+            return redirect(RouteServiceProvider::HOME);
+        }
+
+        $googleClient = GoogleCalendarController::initializeGoogleClient();
+        $googleToken = $googleClient->fetchAccessTokenWithAuthCode($request->code);
+
+        GoogleCalendarController::storeUserToken($googleToken);
+        GoogleCalendarController::getEventsAndStore();
+
+        return redirect(RouteServiceProvider::HOME);
+    }
+
     public static function storeUserToken($token)
     {
 
