@@ -72,14 +72,14 @@ export default function Month() {
   ];
 
   return (
-    <div className="border-[#797979] border-l border-t h-[90%] mt-3">
-      <div className="grid grid-cols-7">
+    <div className="border-[#797979] border-l border-t h-[90.8%] mt-3">
+      <div className="grid grid-cols-7 h-full">
         {cells.map((cell: any, i) => {
           if (i < 7)
             return (
               <div
                 key={i}
-                className="border-b border-r border-[#797979] text-[#797979] flex p-2 font-bold h-[50px] text-[17px] justify-center max-[1300px]:text-[15px] items-center max-[1150px]:text-[12px]"
+                className="border-b border-r border-[#797979] text-[#797979] flex p-2 font-bold  text-[17px] justify-center max-[1300px]:text-[15px] items-center max-[1150px]:text-[12px]"
               >
                 {cell}
               </div>
@@ -89,7 +89,7 @@ export default function Month() {
             <button
               key={i}
               className={cn(
-                "border-b border-r border-[#797979] flex flex-col items-end p-2 h-[115.5px] text-[23px] font-bold gap-2 max-[1300px]:text-[17px]",
+                "relative border-b border-r border-[#797979] flex flex-col items-end p-2 h-[100%] text-[23px] font-bold gap-2 max-[1300px]:text-[17px]",
                 // check if the cell is today
                 today === cell[0] ? "text-[#6571FF]" : "text-[#797979]"
               )}
@@ -101,11 +101,11 @@ export default function Month() {
             >
               {cell[0].getDate()}
 
-              <div className="flex gap-4 justify-end flex-wrap">
+              <div className="flex gap-4 justify-end flex-wrap absolute bottom-2">
                 {cell[1]?.map((task: TaskType, i: number) => (
                   <div
                     key={i}
-                    className="w-[20px] h-[20px] rounded-full max-[1300px]:w-[15px] max-[1300px]:h-[15px]"
+                    className="w-[15px] h-[15px] rounded-full max-[1472px]:w-[12px] max-[1472px]:h-[12px]"
                     style={{
                       backgroundColor: TASK_COLOR[task.type],
                     }}

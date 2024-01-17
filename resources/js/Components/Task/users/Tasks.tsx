@@ -8,7 +8,7 @@ export default function Tasks() {
   const { open } = usePopupStore();
 
   return (
-    <div className="bg-white app-shadow h-[660px] mt-5 rounded-[12px] p-3 overflow-y-auto">
+    <div className="bg-white app-shadow h-[74vh] mt-5 rounded-[12px] p-3 overflow-y-auto">
       <h2 className="text-black text-[19px]">Task List</h2>
 
       <div className="flex flex-wrap mt-3 gap-3">

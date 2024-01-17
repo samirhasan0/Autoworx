@@ -14,7 +14,7 @@ export default function Users() {
   const usersToShow = users.filter((user) => user.id !== current?.id);
 
   return (
-    <div className="bg-white app-shadow h-[660px] mt-5 rounded-[12px] p-3">
+    <div className="bg-white app-shadow h-[74vh] mt-5 rounded-[12px] p-3">
       <h2 className="text-[#797979] text-[16px]">User List</h2>
 
       <form className="flex items-center justify-center gap-2 mt-3">
@@ -28,7 +28,7 @@ export default function Users() {
         </button>
       </form>
 
-      <div className="mt-5 h-[490px] overflow-scroll">
+      <div className="mt-5 h-[54vh] overflow-scroll">
         {usersToShow.map((user, index) => {
           const isSelected = selectedUser === index;
 

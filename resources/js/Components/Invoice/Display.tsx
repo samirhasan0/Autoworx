@@ -12,7 +12,7 @@ export default function Display() {
   const invoices = Array.from({ length: 20 }, () => invoiceDatas[0]);
 
   return (
-    <div className="w-[40vw] border h-[730px] mt-3 rounded-xl bg-white text-[#66738C] app-shadow px-5 py-8 flex flex-col">
+    <div className="w-[40vw] border h-[76vh] mt-3 rounded-xl bg-white text-[#66738C] app-shadow px-5 py-8 flex flex-col">
       {/* Header */}
       <div className="flex h-fit gap-3">
         <h2 className="text-[15px] w-[35%]">Invoice ID</h2>

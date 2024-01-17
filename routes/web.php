@@ -110,7 +110,9 @@ Route::middleware('auth')->group(function () {
             "id" => $id
         ]);
     });
-    Route::inertia("/communication/internal", "Internal");
+    Route::inertia("/communication/internal", "Internal", [
+        "users" => App\Models\User::all(),
+    ]);
     Route::inertia("/communication/collaboration", "Collaboration");
     Route::inertia("/sales", "Sales");
     Route::get("/task", function () {
