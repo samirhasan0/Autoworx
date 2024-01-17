@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\MailController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +27,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu odit, voluptatum, quibusdam, quia quae vol",
+                "email" => "shantoforemail@gmail.com"
             ],
             [
                 "id" => 2,
@@ -32,6 +35,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu odit, voluptatum, quibusdam, quia quae vol",
+                "email" => "shantoforemail@gmail.com"
             ],
             [
                 "id" => 3,
@@ -39,6 +43,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolool sit amet",
+                "email" => "shantoforemail@gmail.com"
             ],
             [
                 "id" => 4,
@@ -46,6 +51,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu",
+                "email" => "shantoforemail@gmail.com"
             ],
             [
                 "id" => 5,
@@ -53,6 +59,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu odit, voluptatum, quibusdam, quia quae vol Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu odit, voluptatum, quibusdam, quia quae volLorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu odit, voluptatum, quibusdam, quia quae volLorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu odit, voluptatum, quibusdam, quia quae volLorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu odit, voluptatum, quibusdam, quia quae volLorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu odit, voluptatum, quibusdam, quia quae vol",
+                "email" => "samkrc2000@gmail.com"
             ],
             [
                 "id" => 6,
@@ -60,6 +67,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu",
+                "email" => "shantoforemail@gmail.com"
             ],
             [
                 "id" => 7,
@@ -67,6 +75,8 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu",
+                "email" => "shantoforemail@gmail.com"
+
             ],
             [
                 "id" => 8,
@@ -74,6 +84,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu",
+                "email" => "shantoforemail@gmail.com"
             ],
             [
                 "id" => 9,
@@ -81,6 +92,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu",
+                "email" => "shantoforemail@gmail.com"
             ],
             [
                 "id" => 10,
@@ -88,6 +100,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu",
+                "email" => "shantoforemail@gmail.com"
             ],
             [
                 "id" => 11,
@@ -95,6 +108,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu",
+                "email" => "shantoforemail@gmail.com"
             ],
             [
                 "id" => 12,
@@ -102,6 +116,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu",
+                "email" => "shantoforemail@gmail.com"
             ],
         ];
 
@@ -111,6 +126,17 @@ Route::middleware('auth')->group(function () {
             "emails" => []
         ]);
     });
+    Route::post("/communication/client/{id}/email", function (Request $request, $id) {
+        // TODO: validate request
+        $to = $request->input("to");
+        $subject = $request->input("subject");
+        $message = $request->input("message");
+
+        MailController::send($to, $subject, $message);
+
+        return redirect("/communication/client/$id");
+    })->name("client.email");
+
     Route::inertia("/communication/internal", "Internal", [
         "users" => App\Models\User::all(),
     ]);

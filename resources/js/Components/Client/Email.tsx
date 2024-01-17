@@ -1,15 +1,26 @@
 import { cn } from "@/lib/cn";
-import { usePage } from "@inertiajs/react";
-import React from "react";
+import { useForm, usePage } from "@inertiajs/react";
 import InlineSVG from "react-inlinesvg";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Email({ user }: { user: any }) {
   const { props } = usePage();
   const { emails } = props as any;
+  const { data, setData, post, processing, errors, reset } = useForm({
+    subject: "",
+    message: "",
+    to: user.email,
+  });
+
+  async function handleSubmit(e: any) {
+    e.preventDefault();
+    post(route("client.email", user.id));
+    reset();
+  }
 
   return (
     <>
-      <div className="h-[80%] overflow-y-scroll">
+      <div className="h-[70%] overflow-y-scroll">
         {emails.map((message: any, index: number) => (
           <div
             key={message.id}
@@ -44,15 +55,36 @@ export default function Email({ user }: { user: any }) {
       </div>
 
       {/* Input */}
-      <form className="flex items-center gap-2 bg-[#D9D9D9] h-[5%] rounded-b-md px-2">
+      <form
+        className="flex items-center gap-2 bg-[#D9D9D9] h-[15%] rounded-b-md px-2"
+        onSubmit={handleSubmit}
+      >
         <InlineSVG src="/icons/attachment.svg" className="w-8  h-8" />
-        <input
-          type="text"
-          placeholder="Send Message..."
-          className="w-full rounded-md text-[10px] px-2 py-0 border-none"
-        />
-        <button className="">
-          <InlineSVG src="/icons/send.svg" className="w-5 h-5" />
+        <div>
+          <input
+            type="text"
+            placeholder="Subject"
+            className="w-full rounded-md text-[12px] px-2 py-0 border-none"
+            name="subject"
+            value={data.subject}
+            onChange={(e) => setData("subject", e.target.value)}
+            required
+          />
+          <textarea
+            placeholder="Send Message..."
+            className="w-full rounded-md text-[12px] px-2 py-0 border-none mt-1 resize-none min-h-[70px]"
+            name="message"
+            value={data.message}
+            onChange={(e) => setData("message", e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">
+          {processing ? (
+            <ThreeDots width={30} height={30} color="green" />
+          ) : (
+            <InlineSVG src="/icons/send.svg" className="w-5 h-5" />
+          )}
         </button>
       </form>
     </>
