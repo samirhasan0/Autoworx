@@ -7,6 +7,7 @@ import { TaskType } from "@/types/task";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { HiCalendar, HiClock } from "react-icons/hi";
+import { useMediaQuery } from "react-responsive";
 
 export default function Day() {
   const [hoveredTask, setHoveredTask] = useState<number | null>(null);
@@ -16,6 +17,8 @@ export default function Day() {
   const { open } = usePopupStore();
   const { tasks } = useTaskStore();
   const { users } = useUsersStore();
+
+  const is1300 = useMediaQuery({ query: "(max-width: 1300px)" });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -113,7 +116,7 @@ export default function Day() {
           const height = `${
             (task.rowEndIndex - task.rowStartIndex + 1) * 45
           }px`;
-          const width = "500px";
+          const width = is1300 ? "300px" : "500px";
           const backgroundColor = TASK_COLOR[task.type];
 
           // Define a function to truncate the task title based on the height
@@ -134,7 +137,7 @@ export default function Day() {
           return (
             <div
               key={task.id}
-              className={`border text-white absolute px-2 py-1 rounded-lg text-[17px] top-0 z-10`}
+              className="border text-white absolute px-2 py-1 rounded-lg text-[17px] top-0 z-10"
               style={{
                 left,
                 top,

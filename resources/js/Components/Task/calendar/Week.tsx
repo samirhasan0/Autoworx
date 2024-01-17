@@ -113,7 +113,7 @@ export default function Week() {
   return (
     <>
       <div
-        className="relative border-[#797979] w-[1116px] border-l border-t border-b h-[90%] mt-3 overflow-auto"
+        className="relative border-[#797979] border border-l border-t border-b h-[90%] mt-3 overflow-auto"
         ref={scrollableDivRef}
       >
         {rows.map((row: any, rowIndex: number) => (
@@ -128,10 +128,13 @@ export default function Week() {
               const isHeaderCell = columnIndex === 0 || rowIndex === 0;
               const cellWidth =
                 columnIndex === 0
-                  ? "min-w-[100px] max-w-[100px]"
-                  : "min-w-[145px] max-w-[145px]";
+                  ? "min-w-[10%] max-w-[10%]"
+                  : "min-w-[15%] max-w-[15%]";
+
               const fontSize =
-                rowIndex === 0 ? "font-bold text-[19px]" : "text-[17px]";
+                rowIndex === 0
+                  ? "font-bold text-[19px] max-[1600px]:text-[15px]"
+                  : "text-[17px] max-[1600px]:text-[13px]";
               const cellClasses = cn(
                 "border-r border-[#797979] h-full text-[#797979] flex justify-center items-center",
                 cellWidth,
@@ -165,12 +168,15 @@ export default function Week() {
         ))}
 
         {weekTasks.map((task, index) => {
-          const left = `${145 * task.columnIndex + 100}px`;
+          // const left = `${145 * task.columnIndex + 100}px`;
+          // left according to the cell width
+          const left = `calc(10% + 15% * ${task.columnIndex})`;
           const top = `${45 * task.rowStartIndex + 45}px`;
           const height = `${
             45 * (task.rowEndIndex - task.rowStartIndex + 1)
           }px`;
-          const width = "145px";
+          // width according to the cell width
+          const width = "15%";
           const backgroundColor = TASK_COLOR[task.type];
 
           // Define a function to truncate the task title based on the height
@@ -198,7 +204,7 @@ export default function Week() {
               onMouseEnter={() => setHoveredTask(index)}
               onMouseLeave={() => setHoveredTask(null)}
             >
-              <p className="text-white p-1 text-[17px] z-30">
+              <p className="text-white p-1 text-[17px] z-30 max-[1600px]:text-[12px]">
                 {truncateTitle(task.title, maxTitleLength)}
               </p>
             </div>
@@ -210,7 +216,9 @@ export default function Week() {
         const isRow0 = task.rowStartIndex === 0;
         const MOVE_FROM_TOP = isRow0 ? 130 : 70;
         const height = 300;
-        const left = `${145 * task.columnIndex + 100 - 120}px`;
+        // const left = `${145 * task.columnIndex + 100 - 120}px`;
+        // left according to the cell width
+        const left = `calc(10% + 15% * ${task.columnIndex} - 120px)`;
         const top = `${
           45 * task.rowStartIndex + 45 - scrollPosition + MOVE_FROM_TOP - height
         }px`;

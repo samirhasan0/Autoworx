@@ -79,7 +79,7 @@ export default function Month() {
             return (
               <div
                 key={i}
-                className="border-b border-r border-[#797979] text-[#797979] flex p-2 w-[160px] font-bold h-[50px] text-[17px] justify-center"
+                className="border-b border-r border-[#797979] text-[#797979] flex p-2 font-bold h-[50px] text-[17px] justify-center max-[1300px]:text-[15px] items-center max-[1150px]:text-[12px]"
               >
                 {cell}
               </div>
@@ -89,7 +89,7 @@ export default function Month() {
             <button
               key={i}
               className={cn(
-                "border-b border-r border-[#797979] flex flex-col items-end p-2 w-[160px] h-[115.5px] text-[23px] font-bold gap-2",
+                "border-b border-r border-[#797979] flex flex-col items-end p-2 h-[115.5px] text-[23px] font-bold gap-2 max-[1300px]:text-[17px]",
                 // check if the cell is today
                 today === cell[0] ? "text-[#6571FF]" : "text-[#797979]"
               )}
@@ -105,7 +105,7 @@ export default function Month() {
                 {cell[1]?.map((task: TaskType, i: number) => (
                   <div
                     key={i}
-                    className="w-[20px] h-[20px] rounded-full"
+                    className="w-[20px] h-[20px] rounded-full max-[1300px]:w-[15px] max-[1300px]:h-[15px]"
                     style={{
                       backgroundColor: TASK_COLOR[task.type],
                     }}

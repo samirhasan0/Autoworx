@@ -14,7 +14,7 @@ export default function Index() {
           <Display />
         </div>
 
-        <div className="w-[728px] border h-[730px] rounded-xl bg-white app-shadow p-3"></div>
+        <div className="w-[40vw] border h-[730px] rounded-xl bg-white app-shadow p-3"></div>
       </div>
     </div>
   );

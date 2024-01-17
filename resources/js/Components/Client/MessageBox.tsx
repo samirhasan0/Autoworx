@@ -59,7 +59,7 @@ export default function MessageBox() {
   ];
 
   return (
-    <div className="w-[430px] h-[760px] app-shadow rounded-lg bg-white">
+    <div className="w-[30%] h-[760px] app-shadow rounded-lg bg-white max-[1400px]:w-[40%]">
       {/* Header */}
       <h2 className="text-[#797979] text-[14px] p-3">Client Message</h2>
 

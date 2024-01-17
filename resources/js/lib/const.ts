@@ -13,7 +13,7 @@ export interface NavItem {
 export const SUB_NAV_LINKS: NavItem[] = [
   {
     name: "Client",
-    path: "/communication/client",
+    path: "/communication/client/1",
   },
   {
     name: "Internal",

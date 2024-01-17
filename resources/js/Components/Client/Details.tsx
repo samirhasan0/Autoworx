@@ -8,7 +8,7 @@ export default function Details() {
   const user = users.find((user: any) => user.id === parseInt(id));
 
   return (
-    <div className="w-[720px] h-[760px] app-shadow rounded-lg bg-white">
+    <div className="w-[50%] h-[760px] app-shadow rounded-lg bg-white max-[1400px]:w-[40%]">
       {/* Client Heading */}
       <div className="w-full h-[180px] bg-[#006D77] rounded-lg">
         {/* Header */}

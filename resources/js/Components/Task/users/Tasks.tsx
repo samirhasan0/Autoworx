@@ -15,7 +15,7 @@ export default function Tasks() {
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="rounded-full text-white text-[17px] py-2 px-4"
+            className="rounded-full text-white text-[17px] py-2 px-4 max-[1300px]:px-2 max-[1300px]:py-1 max-[1300px]:text-[14px]"
             style={{ backgroundColor: TASK_COLOR[task.type] }}
           >
             {task.title}
@@ -23,7 +23,7 @@ export default function Tasks() {
         ))}
 
         <button
-          className="rounded-full text-[17px] text-white py-2 px-14 bg-[#797979]"
+          className="rounded-full text-[17px] text-white py-2 px-14 bg-[#797979] max-[1300px]:px-2 max-[1300px]:py-1 max-[1300px]:text-[14px]"
           onClick={() => open("ADD_TASK")}
         >
           <FaPlus />
