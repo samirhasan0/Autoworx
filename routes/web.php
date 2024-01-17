@@ -35,7 +35,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu odit, voluptatum, quibusdam, quia quae vol",
-                "email" => "shantoforemail@gmail.com"
+                "email" => "khalilorrahman2005@gmail.com"
             ],
             [
                 "id" => 3,
@@ -120,10 +120,13 @@ Route::middleware('auth')->group(function () {
             ],
         ];
 
+        $user = collect($users)->firstWhere("id", $id);
+        $emails = MailController::get($user["email"]);
+
         return Inertia\Inertia::render("Client", [
             "users" => $users,
             "id" => $id,
-            "emails" => []
+            "emails" => $emails,
         ]);
     });
     Route::post("/communication/client/{id}/email", function (Request $request, $id) {

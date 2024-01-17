@@ -119,7 +119,7 @@ export default function Week() {
         {rows.map((row: any, rowIndex: number) => (
           <div
             className={cn(
-              "flex h-[45px] border-[#797979]",
+              "flex h-[45px] border-[#797979] overflow-hidden",
               rowIndex !== rows.length - 1 && "border-b"
             )}
             key={rowIndex}
@@ -129,7 +129,7 @@ export default function Week() {
               const cellWidth =
                 columnIndex === 0
                   ? "min-w-[10%] max-w-[10%]"
-                  : "min-w-[15%] max-w-[15%]";
+                  : "min-w-[12.9%] max-w-[12.9%]";
 
               const fontSize =
                 rowIndex === 0
@@ -170,13 +170,13 @@ export default function Week() {
         {weekTasks.map((task, index) => {
           // const left = `${145 * task.columnIndex + 100}px`;
           // left according to the cell width
-          const left = `calc(10% + 15% * ${task.columnIndex})`;
+          const left = `calc(10% + 12.9% * ${task.columnIndex})`;
           const top = `${45 * task.rowStartIndex + 45}px`;
           const height = `${
             45 * (task.rowEndIndex - task.rowStartIndex + 1)
           }px`;
           // width according to the cell width
-          const width = "15%";
+          const width = "12.9%";
           const backgroundColor = TASK_COLOR[task.type];
 
           // Define a function to truncate the task title based on the height
@@ -186,6 +186,7 @@ export default function Week() {
               : title;
           };
 
+          // TODO
           // Define the maximum title length based on the height
           const maxTitleLength =
             height === "45px" ? 13 : height === "90px" ? 30 : task.title.length;
