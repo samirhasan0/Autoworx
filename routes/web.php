@@ -107,7 +107,8 @@ Route::middleware('auth')->group(function () {
 
         return Inertia\Inertia::render("Client", [
             "users" => $users,
-            "id" => $id
+            "id" => $id,
+            "emails" => []
         ]);
     });
     Route::inertia("/communication/internal", "Internal", [
