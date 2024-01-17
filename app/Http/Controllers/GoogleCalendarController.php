@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleCalendarController extends Controller
@@ -137,7 +138,17 @@ class GoogleCalendarController extends Controller
     // Get the user's google oauth2 token
     public static function getUserToken($user)
     {
-        return OauthToken::where('user_id', $user->id)->where('provider', 'google')->first();
+        $token = OauthToken::where('user_id', $user->id)->where('provider', 'google')->first();
+
+        if ($token) {
+            return [
+                'access_token' => $token->access_token,
+                'expires_in' => Carbon::parse($token->expires_in)->diffInSeconds(Carbon::now()),
+                'refresh_token' => $token->refresh_token,
+            ];
+        }
+
+        return null;
     }
 
     // Initialize the Google Client with secret keys and user's token
