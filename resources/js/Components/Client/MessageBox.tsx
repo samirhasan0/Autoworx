@@ -61,10 +61,12 @@ export default function MessageBox() {
   return (
     <div className="w-[30%] h-[83vh] app-shadow rounded-lg bg-white max-[1400px]:w-[40%]">
       {/* Header */}
-      <h2 className="text-[#797979] text-[14px] p-3">Client Message</h2>
+      <h2 className="text-[#797979] text-[14px] p-3 border h-[5%]">
+        Client Message
+      </h2>
 
       {/* Chat Header */}
-      <div className="flex items-center gap-2 justify-between bg-[#006D77] rounded-md p-2 text-white">
+      <div className="flex items-center gap-2 justify-between bg-[#006D77] rounded-md p-2 text-white h-[10%]">
         <div className="flex items-center">
           <img
             src={user.image}
@@ -85,7 +87,7 @@ export default function MessageBox() {
       </div>
 
       {/* Messages */}
-      <div className="h-[72.5%] overflow-y-scroll mt-2">
+      <div className="h-[80%] overflow-y-scroll">
         {messages.map((message: any, index: number) => (
           <div
             key={message.id}
@@ -120,7 +122,7 @@ export default function MessageBox() {
       </div>
 
       {/* Input */}
-      <form className="flex items-center gap-2 bg-[#D9D9D9] h-[40px] p-2 mt-3">
+      <form className="flex items-center gap-2 bg-[#D9D9D9] h-[5%] rounded-b-md px-2">
         <InlineSVG src="/icons/attachment.svg" className="w-8  h-8" />
         <input
           type="text"

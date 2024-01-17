@@ -9,7 +9,7 @@ export default function List() {
   console.log("users: ", users);
 
   return (
-    <div className="w-[20%] h-[83vh] rounded-lg bg-white app-shadow p-3">
+    <div className="relative w-[20%] h-[83vh] rounded-lg bg-white app-shadow p-3 overflow-y-scroll overflow-x-hidden pb-5">
       {/* Header */}
       <h2 className="text-[#797979] text-[14px]">Client List</h2>
 
@@ -29,14 +29,14 @@ export default function List() {
       </form>
 
       {/* List */}
-      <div className="flex flex-col gap-2 mt-2 overflow-y-auto h-[80%]">
+      <div className="flex flex-col gap-2 mt-2">
         {users.map((user) => {
           const selected = id == user.id;
           return (
             <Link
               key={user.id}
               className={cn(
-                "flex items-center gap-2 rounded-md p-2",
+                "flex items-center gap-2 rounded-md p-3",
                 selected ? "bg-[#006D77]" : "bg-[#F2F2F2]"
               )}
               href={`/communication/client/${user.id}`}

@@ -66,7 +66,7 @@ export default function MessageBox({
   return (
     <div className="w-[18%] h-[40vh] overflow-hidden app-shadow rounded-lg bg-white max-[1400px]:w-[40%] border">
       {/* Chat Header */}
-      <div className="flex items-center gap-2 justify-between bg-[#006D77] rounded-md p-2 text-white">
+      <div className="flex items-center gap-2 justify-between bg-[#006D77] rounded-md p-2 text-white h-[10%]">
         <div className="flex items-center gap-1">
           <img
             src={user.image}
@@ -74,7 +74,7 @@ export default function MessageBox({
             className="w-[25px] h-[25px] rounded-full"
           />
           <div className="flex flex-col">
-            <p className="font-bold text-[9px]">{user.name}</p>
+            <p className="font-bold text-[10px]">{user.name}</p>
           </div>
         </div>
 
@@ -94,7 +94,7 @@ export default function MessageBox({
       </div>
 
       {/* Messages */}
-      <div className="h-[28vh] overflow-y-scroll mt-2">
+      <div className="h-[82%] overflow-y-scroll">
         {messages.map((message: any, index: number) => (
           <div
             key={message.id}
@@ -129,15 +129,15 @@ export default function MessageBox({
       </div>
 
       {/* Input */}
-      <form className="flex items-center gap-2 bg-[#D9D9D9] h-[40px] p-2 mt-3">
-        <InlineSVG src="/icons/attachment.svg" className="w-8  h-8" />
+      <form className="flex items-center gap-2 bg-[#D9D9D9] h-[8%] p-2">
+        <InlineSVG src="/icons/attachment.svg" className="w-5  h-5" />
         <input
           type="text"
           placeholder="Send Message..."
-          className="w-full rounded-md text-[10px] px-2 py-0 border-none"
+          className="w-full rounded-md text-[8px] px-1 py-0 border-none"
         />
         <button className="">
-          <InlineSVG src="/icons/send.svg" className="w-5 h-5" />
+          <InlineSVG src="/icons/send.svg" className="w-4 h-4" />
         </button>
       </form>
     </div>

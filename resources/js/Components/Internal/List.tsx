@@ -10,26 +10,28 @@ export default function List({
 }) {
   return (
     <div className="w-[20%] h-[83vh] rounded-lg bg-white app-shadow p-3">
-      {/* Header */}
-      <h2 className="text-[#797979] text-[14px]">User List</h2>
+      <div className="h-[12%] max-[2127px]:h-[18%]">
+        {/* Header */}
+        <h2 className="text-[#797979] text-[14px]">User List</h2>
 
-      {/* Search */}
-      <form>
-        <input
-          type="text"
-          placeholder="Search here..."
-          className="text-[#797979] text-[12px] border-none p-2 my-3 mr-2 rounded-md max-[1822px]:w-full"
-        />
-        <button
-          type="submit"
-          className="text-[12px] bg-[#797979] w-[62px] h-[26px] text-white rounded-md"
-        >
-          Filter
-        </button>
-      </form>
+        {/* Search */}
+        <form>
+          <input
+            type="text"
+            placeholder="Search here..."
+            className="text-[#797979] text-[12px] border-none p-2 my-3 mr-2 rounded-md max-[1822px]:w-full"
+          />
+          <button
+            type="submit"
+            className="text-[12px] bg-[#797979] w-[62px] h-[26px] text-white rounded-md"
+          >
+            Filter
+          </button>
+        </form>
+      </div>
 
       {/* List */}
-      <div className="flex flex-col gap-2 mt-2 overflow-y-auto h-[645px]">
+      <div className="flex flex-col gap-2 mt-2 overflow-y-auto h-[86%] max-[2127px]:h-[80%]">
         {users.map((user) => {
           return (
             <button
