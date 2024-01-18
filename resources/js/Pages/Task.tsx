@@ -42,7 +42,7 @@ export default function Task({
 
       <Title>Task and Activity Management</Title>
 
-      <div className="flex">
+      <div className="relative h-[81vh] flex">
         <Calendar />
         <CalendarUser />
       </div>

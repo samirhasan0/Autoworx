@@ -8,10 +8,10 @@ export default function Tasks() {
   const { open } = usePopupStore();
 
   return (
-    <div className="bg-white app-shadow h-[74vh] mt-5 rounded-[12px] p-3 overflow-y-auto">
+    <div className="relative bg-white app-shadow h-[93%] mt-5 rounded-[12px] p-3">
       <h2 className="text-black text-[19px]">Task List</h2>
 
-      <div className="flex flex-wrap mt-3 gap-3">
+      <div className="flex flex-wrap mt-3 h-[92%] gap-3 overflow-y-auto">
         {tasks.map((task) => (
           <div
             key={task.id}

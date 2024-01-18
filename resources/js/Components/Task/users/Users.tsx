@@ -14,21 +14,23 @@ export default function Users() {
   const usersToShow = users.filter((user) => user.id !== current?.id);
 
   return (
-    <div className="bg-white app-shadow h-[74vh] mt-5 rounded-[12px] p-3">
-      <h2 className="text-[#797979] text-[16px]">User List</h2>
+    <div className="bg-white app-shadow h-[93%] mt-5 rounded-[12px] p-3">
+      <div className="h-[10%] border">
+        <h2 className="text-[#797979] text-[16px]">User List</h2>
 
-      <form className="flex items-center justify-center gap-2 mt-3">
-        <input
-          type="search"
-          className="w-[70%] border-none"
-          placeholder="Search here..."
-        />
-        <button className="bg-[#797979] rounded-[5px] text-white text-[13px] w-[30%] p-2">
-          Filter
-        </button>
-      </form>
+        <form className="flex items-center justify-center gap-2 mt-3">
+          <input
+            type="search"
+            className="w-[70%] border-none"
+            placeholder="Search here..."
+          />
+          <button className="bg-[#797979] rounded-[5px] text-white text-[13px] w-[30%] p-2">
+            Filter
+          </button>
+        </form>
+      </div>
 
-      <div className="mt-5 h-[54vh] overflow-scroll">
+      <div className="h-[82%] overflow-scroll py-2">
         {usersToShow.map((user, index) => {
           const isSelected = selectedUser === index;
 
@@ -53,7 +55,7 @@ export default function Users() {
       </div>
 
       <button
-        className="bg-blue-600 rounded-[5px] text-white text-[15px] w-full py-2 mt-3"
+        className="mt-4 bg-blue-600 rounded-[5px] text-white text-[15px] w-full py-2 h-[5%]"
         onClick={() => open("ADD_USER")}
       >
         Add User
