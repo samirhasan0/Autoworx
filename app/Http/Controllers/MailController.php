@@ -48,7 +48,7 @@ class MailController extends Controller
 
         // Sort the messages by date
         usort($emailMessages, function ($a, $b) {
-            return $b['date'] - $a['date'];
+            return $a['date'] - $b['date'];
         });
 
         return $emailMessages;
