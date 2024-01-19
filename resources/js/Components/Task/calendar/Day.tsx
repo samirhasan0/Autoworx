@@ -15,6 +15,7 @@ export default function Day() {
   const [hoveredTask, setHoveredTask] = useState<number | null>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
   const scrollableDivRef = useRef<HTMLDivElement>(null);
+  const { delete: deleteTask } = useForm();
 
   const { open } = usePopupStore();
   const { tasks } = useTaskStore();
@@ -35,6 +36,10 @@ export default function Day() {
         scrollableDivRef.current.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const handleDelete = (id: number) => {
+    deleteTask(route("task.destroy", id));
+  };
 
   const rows = [
     "All Day",
@@ -206,7 +211,10 @@ export default function Day() {
                 <MdModeEdit />
                 Edit
               </button>
-              <button className="flex items-center bg-[#ff4d4f] text-white py-1 px-2 rounded-md mt-2 ml-2">
+              <button
+                className="flex items-center bg-[#ff4d4f] text-white py-1 px-2 rounded-md mt-2 ml-2"
+                onClick={() => handleDelete(task.id)}
+              >
                 <MdDelete />
                 Delete
               </button>

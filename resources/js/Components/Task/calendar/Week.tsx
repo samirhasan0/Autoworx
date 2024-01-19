@@ -3,6 +3,7 @@ import { TASK_COLOR } from "@/lib/const";
 import { usePopupStore } from "@/stores/popup";
 import { useTaskStore } from "@/stores/tasks";
 import { useUsersStore } from "@/stores/users";
+import { useForm } from "@inertiajs/react";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 // import calendar and clock icons
@@ -13,6 +14,7 @@ export default function Week() {
   const [hoveredTask, setHoveredTask] = useState<number | null>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
   const scrollableDivRef = useRef<HTMLDivElement>(null);
+  const { delete: deleteTask } = useForm();
 
   const { open } = usePopupStore();
   const { tasks } = useTaskStore();
@@ -31,6 +33,10 @@ export default function Week() {
         scrollableDivRef.current.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const handleDelete = (id: number) => {
+    deleteTask(route("task.destroy", id));
+  };
 
   // Get the current date
   const today = new Date();
@@ -265,7 +271,10 @@ export default function Week() {
                 <MdModeEdit />
                 Edit
               </button>
-              <button className="flex items-center bg-[#ff4d4f] text-white py-1 px-2 rounded-md mt-2 ml-2">
+              <button
+                className="flex items-center bg-[#ff4d4f] text-white py-1 px-2 rounded-md mt-2 ml-2"
+                onClick={() => handleDelete(task.id)}
+              >
                 <MdDelete />
                 Delete
               </button>

@@ -165,8 +165,18 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy(string $id)
     {
-        //
+        // get the task
+        $task = Task::find($id);
+
+        // delete the task
+        $task->delete();
+
+        // TODO: delete the event from google calendar
+        // GoogleCalendarController::deleteEvent($task);
+
+        // redirect to the task page
+        return redirect()->back();
     }
 }
