@@ -7,6 +7,7 @@ import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 // import calendar and clock icons
 import { HiCalendar, HiClock } from "react-icons/hi";
+import { MdDelete, MdModeEdit } from "react-icons/md";
 
 export default function Week() {
   const [hoveredTask, setHoveredTask] = useState<number | null>(null);
@@ -258,8 +259,20 @@ export default function Week() {
               </p>
             </div>
 
+            {/* Options */}
+            <div className="flex justify-end text-[14px]">
+              <button className="flex items-center bg-[#24a0ff] text-white py-1 px-2 rounded-md mt-2">
+                <MdModeEdit />
+                Edit
+              </button>
+              <button className="flex items-center bg-[#ff4d4f] text-white py-1 px-2 rounded-md mt-2 ml-2">
+                <MdDelete />
+                Delete
+              </button>
+            </div>
+
             {/* Show users */}
-            <div className="mt-3 h-[12rem] overflow-auto">
+            <div className="mt-3 h-[10rem] overflow-auto">
               {task.assigned_users.map((user_id: number) => {
                 const user = users.find((user) => user.id === user_id);
                 if (!user) return null;

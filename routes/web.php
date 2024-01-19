@@ -241,6 +241,7 @@ Route::middleware('auth')->group(function () {
             "users" => App\Models\User::all(),
         ]);
     });
+    Route::delete("/task/{task}", [TaskController::class, "destroy"])->name("task.destroy");
     Route::inertia("analytics", "Analytics");
     Route::inertia("invoice", "Invoice");
 

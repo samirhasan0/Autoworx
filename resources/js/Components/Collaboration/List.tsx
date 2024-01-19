@@ -37,7 +37,7 @@ export default function List({
             return (
               <div key={company.id} className="bg-[#006D77] rounded-lg p-2">
                 <button
-                  className="flex items-center mx-auto gap-1"
+                  className="flex items-center justify-center gap-1 w-full"
                   onClick={() => setSelectedCompany(null)}
                 >
                   <img

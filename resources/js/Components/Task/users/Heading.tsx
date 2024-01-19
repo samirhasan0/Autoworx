@@ -5,10 +5,10 @@ export default function Heading() {
   const { calendarUserType, setCalendarUserType } = useCalendarUserTypeStore();
 
   return (
-    <div className="flex items-center justify-center h-[5%] rounded-[6px] bg-[#D9D9D9] calender-time-shadow gap-2 p-2">
+    <div className="flex items-center justify-center w-[263px] h-[42px] rounded-[6px] bg-[#D9D9D9] calender-time-shadow gap-2 max-[1300px]:w-[210px]">
       <button
         className={cn(
-          "text-[#797979] text-[19px] w-[134px] h-[34px] rounded-[4px] max-[1300px]:w-[90px] max-[1300px]:h-[30px] max-[1300px]:text-[17px]",
+          "text-[#797979] text-[19px] w-[110px] h-[34px] rounded-[4px] max-[1300px]:w-[90px] max-[1300px]:h-[30px] max-[1300px]:text-[17px]",
           calendarUserType === "USERS" && "bg-white"
         )}
         onClick={() => setCalendarUserType("USERS")}
@@ -17,7 +17,7 @@ export default function Heading() {
       </button>
       <button
         className={cn(
-          "text-[#797979] text-[19px] w-[134px] h-[34px] rounded-[4px] max-[1300px]:w-[90px] max-[1300px]:h-[30px] max-[1300px]:text-[17px]",
+          "text-[#797979] text-[19px] w-[110px] h-[34px] rounded-[4px] max-[1300px]:w-[90px] max-[1300px]:h-[30px] max-[1300px]:text-[17px]",
           calendarUserType === "TASKS" && "bg-white"
         )}
         onClick={() => setCalendarUserType("TASKS")}
