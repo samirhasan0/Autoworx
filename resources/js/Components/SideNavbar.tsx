@@ -37,7 +37,6 @@ export default function SideNavbar() {
     <nav className="bg-[#0C1427] fixed h-screen w-[20%] px-10 py-12">
       <div className="flex items-center justify-between gap-3">
         {/* logo */}
-        {/* <InlineSVG src="/icons/logo.svg" width={214} /> */}
         <img
           src="/icons/logo.svg"
           alt="Company Logo"
