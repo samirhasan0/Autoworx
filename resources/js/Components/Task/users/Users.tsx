@@ -15,7 +15,7 @@ export default function Users() {
 
   return (
     <div className="bg-white app-shadow h-[93%] mt-5 rounded-[12px] p-3">
-      <div className="h-[10%] border">
+      <div className="h-[10%]">
         <h2 className="text-[#797979] text-[16px]">User List</h2>
 
         <form className="flex items-center justify-center gap-2 mt-3">

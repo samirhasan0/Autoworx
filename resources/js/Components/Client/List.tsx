@@ -9,7 +9,7 @@ export default function List() {
   console.log("users: ", users);
 
   return (
-    <div className="relative w-[20%] h-[83vh] rounded-lg bg-white app-shadow p-3 overflow-y-scroll overflow-x-hidden pb-5">
+    <div className="w-[20%] h-[83vh] rounded-lg bg-white app-shadow p-3">
       {/* Header */}
       <h2 className="text-[#797979] text-[14px]">Client List</h2>
 
@@ -29,7 +29,7 @@ export default function List() {
       </form>
 
       {/* List */}
-      <div className="flex flex-col gap-2 mt-2">
+      <div className="flex flex-col gap-2 mt-2 overflow-y-auto h-[87%] max-[1835px]:h-[82%]">
         {users.map((user) => {
           const selected = id == user.id;
           return (
