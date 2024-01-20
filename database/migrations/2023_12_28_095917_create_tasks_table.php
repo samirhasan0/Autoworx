@@ -23,6 +23,7 @@ return new class extends Migration
             // assigned_users
             $table->string('assigned_users', 100);
             $table->string('timezone', 100);
+            $table->string('google_calendar_event_id', 100)->nullable();
             $table->timestamps();
         });
     }

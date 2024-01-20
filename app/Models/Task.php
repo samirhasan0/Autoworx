@@ -25,7 +25,8 @@ class Task extends Model
         'type',
         'user_id',
         "assigned_users",
-        "timezone"
+        "timezone",
+        "google_calendar_event_id",
     ];
 
 
