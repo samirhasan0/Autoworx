@@ -132,7 +132,59 @@ class GoogleCalendarController extends Controller
         $event = self::getGoogleCalendarEvent($task, $user);
 
         // Add the event to the user's primary calendar
-        $service->events->insert('primary', $event);
+        $createdEvent = $service->events->insert('primary', $event);
+
+        // Update the task with the Google Calendar event id
+        $task->update(['google_calendar_event_id' => $createdEvent->id]);
+    }
+
+    // Delete an event from the user's Google Calendar
+    public static function deleteEvent(Task $task)
+    {
+        $user = Auth::user();
+        $token = self::getUserToken($user);
+
+        // If user has not connected to google calendar, do nothing
+        if (!$token) return;
+
+        $client = self::initializeGoogleClient();
+        $client->setAccessToken($token);
+        $service = new Google_Service_Calendar($client);
+
+        // Get the event id
+        $event_id = $task->google_calendar_event_id;
+
+        // If event id is null, do nothing
+        if (!$event_id) return;
+
+        // Delete the event from the user's primary calendar
+        $service->events->delete('primary', $event_id);
+    }
+
+    // Update an event in the user's Google Calendar
+    public static function updateEvent(Task $task)
+    {
+        $user = Auth::user();
+        $token = self::getUserToken($user);
+
+        // If user has not connected to google calendar, do nothing
+        if (!$token) return;
+
+        $client = self::initializeGoogleClient();
+        $client->setAccessToken($token);
+        $service = new Google_Service_Calendar($client);
+
+        // Get the event id
+        $event_id = $task->google_calendar_event_id;
+
+        // If event id is null, do nothing
+        if (!$event_id) return;
+
+        // Create the event object
+        $event = self::getGoogleCalendarEvent($task, $user);
+
+        // Update the event in the user's primary calendar
+        $service->events->update('primary', $event_id, $event);
     }
 
     // Get the user's google oauth2 token

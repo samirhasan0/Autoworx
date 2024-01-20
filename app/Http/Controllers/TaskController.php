@@ -149,8 +149,8 @@ class TaskController extends Controller
         // update the task
         $task->update($formFields);
 
-        // TODO: update the event in google calendar
-        // GoogleCalendarController::updateEvent($task);
+        // Update the event in google calendar
+        GoogleCalendarController::updateEvent($task);
 
         // redirect to the task page
         return redirect()->back();
@@ -161,8 +161,6 @@ class TaskController extends Controller
      */
     public function assignTasks(Request $request)
     {
-
-
         // validate the request
         $formFields = $request->validate([
             "user" => "required|exists:users,id",
@@ -222,8 +220,8 @@ class TaskController extends Controller
         // delete the task
         $task->delete();
 
-        // TODO: delete the event from google calendar
-        // GoogleCalendarController::deleteEvent($task);
+        // delete the event from google calendar
+        GoogleCalendarController::deleteEvent($task);
 
         // redirect to the task page
         return redirect()->back();
