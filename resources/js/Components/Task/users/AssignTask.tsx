@@ -23,8 +23,6 @@ export default function AssignTask() {
     ]),
   });
 
-  console.log("data: ", data);
-
   const [selectedButton, setSelectedButton] = useState<"ASSIGN" | "ADD">(
     "ASSIGN"
   );

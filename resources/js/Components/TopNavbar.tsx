@@ -6,9 +6,6 @@ export default function TopNavbar() {
   const { props } = usePage();
   const { hasGoogleCalendar, hasCalendly } = props;
 
-  console.log("hasGoogleCalendar: ", hasGoogleCalendar);
-  console.log("hasCalendly: ", hasCalendly);
-
   return (
     <div className="h-[7vh] flex items-center p-5 justify-between pr-10">
       <form className="flex items-center">

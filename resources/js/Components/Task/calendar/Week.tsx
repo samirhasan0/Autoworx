@@ -9,12 +9,13 @@ import { useEffect, useRef, useState } from "react";
 // import calendar and clock icons
 import { HiCalendar, HiClock } from "react-icons/hi";
 import { MdDelete, MdModeEdit } from "react-icons/md";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Week() {
   const [hoveredTask, setHoveredTask] = useState<number | null>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
   const scrollableDivRef = useRef<HTMLDivElement>(null);
-  const { delete: deleteTask } = useForm();
+  const { delete: deleteTask, processing } = useForm();
 
   const { open } = usePopupStore();
   const { tasks } = useTaskStore();
@@ -102,9 +103,6 @@ export default function Week() {
       // Convert the taskStartTime and taskEndTime to a format like "1 PM" or "11 AM"
       const taskStartTime = moment(task.start_time, "HH:mm").format("h A");
       const taskEndTime = moment(task.end_time, "HH:mm").format("h A");
-
-      console.log("Task Start Time: ", taskStartTime);
-      console.log("Task End Time: ", taskEndTime);
 
       // Find the rowStartIndex and rowEndIndex by looping over the hourlyRows
       const rowStartIndex = hourlyRows.findIndex((row) =>
@@ -267,7 +265,10 @@ export default function Week() {
 
             {/* Options */}
             <div className="flex justify-end text-[14px]">
-              <button className="flex items-center bg-[#24a0ff] text-white py-1 px-2 rounded-md mt-2">
+              <button
+                className="flex items-center bg-[#24a0ff] text-white py-1 px-2 rounded-md mt-2"
+                onClick={() => open("EDIT_TASK", { ...task })}
+              >
                 <MdModeEdit />
                 Edit
               </button>
@@ -275,8 +276,14 @@ export default function Week() {
                 className="flex items-center bg-[#ff4d4f] text-white py-1 px-2 rounded-md mt-2 ml-2"
                 onClick={() => handleDelete(task.id)}
               >
-                <MdDelete />
-                Delete
+                {processing ? (
+                  <ThreeDots color="#fff" height={10} width={30} />
+                ) : (
+                  <>
+                    <MdDelete />
+                    Delete
+                  </>
+                )}
               </button>
             </div>
 

@@ -10,12 +10,13 @@ import { HiCalendar, HiClock } from "react-icons/hi";
 import { useMediaQuery } from "react-responsive";
 import { MdModeEdit, MdDelete } from "react-icons/md";
 import { useForm } from "@inertiajs/react";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Day() {
   const [hoveredTask, setHoveredTask] = useState<number | null>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
   const scrollableDivRef = useRef<HTMLDivElement>(null);
-  const { delete: deleteTask } = useForm();
+  const { delete: deleteTask, processing } = useForm();
 
   const { open } = usePopupStore();
   const { tasks } = useTaskStore();
@@ -54,9 +55,14 @@ export default function Day() {
   const dayTasks = tasks
     .filter((task) => {
       // return today's tasks
-      const taskDate = new Date(task.date);
-      const today = new Date();
-      return taskDate.getDate() === today.getDate();
+      // also filter by month and year
+      const taskDate = moment(task.date);
+      const today = moment();
+      return (
+        taskDate.date() === today.date() &&
+        taskDate.month() === today.month() &&
+        taskDate.year() === today.year()
+      );
     })
     .map((task) => {
       const taskStartTime = moment(task.start_time, "HH:mm").format("h A");
@@ -115,9 +121,6 @@ export default function Day() {
 
         {/* Tasks */}
         {dayTasks.map((task, index) => {
-          console.log("Start: ", task.rowStartIndex);
-          console.log("End: ", task.rowEndIndex);
-
           const left = "130px";
           const top = `${task.rowStartIndex * 45}px`;
           const height = `${
@@ -207,7 +210,13 @@ export default function Day() {
 
             {/* Options */}
             <div className="flex justify-end text-[14px]">
-              <button className="flex items-center bg-[#24a0ff] text-white py-1 px-2 rounded-md mt-2">
+              <button
+                className="flex items-center bg-[#24a0ff] text-white py-1 px-2 rounded-md mt-2"
+                onClick={() => {
+                  setHoveredTask(null);
+                  open("EDIT_TASK", { ...task });
+                }}
+              >
                 <MdModeEdit />
                 Edit
               </button>
@@ -215,8 +224,14 @@ export default function Day() {
                 className="flex items-center bg-[#ff4d4f] text-white py-1 px-2 rounded-md mt-2 ml-2"
                 onClick={() => handleDelete(task.id)}
               >
-                <MdDelete />
-                Delete
+                {processing ? (
+                  <ThreeDots color="#fff" height={10} width={30} />
+                ) : (
+                  <>
+                    <MdDelete />
+                    Delete
+                  </>
+                )}
               </button>
             </div>
 

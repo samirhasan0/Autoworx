@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
                 "company" => "Client Company",
                 "image" => "/images/default.png",
                 "description" => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. Qu",
-                "email" => "shantoforemail@gmail.com"
+                "email" => "aamir@levantit.com"
             ],
             [
                 "id" => 7,
@@ -241,6 +241,7 @@ Route::middleware('auth')->group(function () {
             "users" => App\Models\User::all(),
         ]);
     });
+    Route::put("/task/{id}", [TaskController::class, "update"])->name("task.update");
     Route::delete("/task/{id}", [TaskController::class, "destroy"])->name("task.destroy");
     Route::inertia("analytics", "Analytics");
     Route::inertia("invoice", "Invoice");

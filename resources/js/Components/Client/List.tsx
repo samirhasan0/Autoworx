@@ -6,8 +6,6 @@ export default function List() {
   const users = props.users as any[]; // TODO: type this
   const id = props.id;
 
-  console.log("users: ", users);
-
   return (
     <div className="w-[20%] h-[83vh] rounded-lg bg-white app-shadow p-3">
       {/* Header */}
