@@ -166,8 +166,21 @@ export default function Day() {
       </div>
 
       {dayTasks.map((task, index) => {
-        const firstTask = task.rowStartIndex === 1;
-        const MOVE_FROM_TOP = firstTask ? 90 : 30;
+        // const firstTask = task.rowStartIndex === 1;
+        const rowIndex = task.rowStartIndex;
+        // const MOVE_FROM_TOP = firstTask ? 90 : 30;
+        const MOVE_FROM_TOP =
+          rowIndex === 0
+            ? 260
+            : rowIndex === 1
+            ? 220
+            : rowIndex === 2
+            ? 180
+            : rowIndex === 3
+            ? 140
+            : rowIndex === 4
+            ? 100
+            : 70;
         const height = 300;
         const left = "130px";
         const top = `${

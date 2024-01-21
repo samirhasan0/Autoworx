@@ -219,12 +219,31 @@ export default function Week() {
       </div>
 
       {weekTasks.map((task, index) => {
-        const isRow0 = task.rowStartIndex === 0;
-        const MOVE_FROM_TOP = isRow0 ? 130 : 70;
+        const rowIndex = task.rowStartIndex;
+        const columnIndex = task.columnIndex;
+        const MOVE_FROM_TOP =
+          rowIndex === 0
+            ? 260
+            : rowIndex === 1
+            ? 220
+            : rowIndex === 2
+            ? 180
+            : rowIndex === 3
+            ? 140
+            : rowIndex === 4
+            ? 100
+            : 70;
+        const MOVE_FROM_LEFT =
+          columnIndex === 6
+            ? 270
+            : columnIndex === 5
+            ? 150
+            : columnIndex === 0
+            ? 50
+            : 120;
         const height = 300;
-        // const left = `${145 * task.columnIndex + 100 - 120}px`;
         // left according to the cell width
-        const left = `calc(10% + 15% * ${task.columnIndex} - 120px)`;
+        const left = `calc(10% + 12.9% * ${task.columnIndex} - ${MOVE_FROM_LEFT}px)`;
         const top = `${
           45 * task.rowStartIndex + 45 - scrollPosition + MOVE_FROM_TOP - height
         }px`;
