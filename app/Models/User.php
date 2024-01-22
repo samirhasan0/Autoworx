@@ -51,6 +51,12 @@ class User extends Authenticatable
         return $this->hasMany(Task::class);
     }
 
+    // make relationship with task_users
+    public function task_users()
+    {
+        return $this->hasMany(TaskUsers::class);
+    }
+
     public function oauthTokens()
     {
         return $this->hasMany(OauthToken::class);

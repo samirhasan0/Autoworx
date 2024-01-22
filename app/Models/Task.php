@@ -16,7 +16,6 @@ class Task extends Model
         "event",
     ];
 
-
     protected $fillable = [
         'title',
         'date',
@@ -24,17 +23,18 @@ class Task extends Model
         'end_time',
         'type',
         'user_id',
-        "assigned_users",
         "timezone",
-        "google_calendar_event_id",
     ];
-
-
-
 
     // make relationship with user
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // make relationship with task_users
+    public function task_users()
+    {
+        return $this->hasMany(TaskUsers::class);
     }
 }
