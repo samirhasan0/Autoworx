@@ -23,7 +23,6 @@ class Task extends Model
         'end_time',
         'type',
         'user_id',
-        "timezone",
     ];
 
     // make relationship with user

@@ -65,6 +65,8 @@ class AuthenticatedSessionController extends Controller
         $googleClient = GoogleCalendarController::initializeGoogleClient(env('GOOGLE_REDIRECT_CALLBACK'));
         // scope for calendar events
         $googleClient->addScope('https://www.googleapis.com/auth/calendar.events');
+        // scope for calendar settings
+        $googleClient->addScope('https://www.googleapis.com/auth/calendar.readonly');
         // scope for user info
         $googleClient->addScope('https://www.googleapis.com/auth/userinfo.profile');
         // scope for user email
@@ -93,6 +95,10 @@ class AuthenticatedSessionController extends Controller
         $googleClient = GoogleCalendarController::initializeGoogleClient(env('GOOGLE_REDIRECT_CALLBACK'));
         // request access and refresh token
         $googleToken = $googleClient->fetchAccessTokenWithAuthCode(request()->code);
+        // get user's primary calendar timezone
+        $calendarService = new \Google_Service_Calendar($googleClient);
+        $calendarListEntry = $calendarService->calendarList->get('primary');
+        $userTimezone = $calendarListEntry->getTimeZone();
 
         // get user
         $oAuth2 = new \Google_Service_Oauth2($googleClient);
@@ -112,6 +118,8 @@ class AuthenticatedSessionController extends Controller
                 'password' => Hash::make(Str::random(24)),
                 'provider' => 'google',
                 'image' => $userInfo->picture,
+                'email_verified_at' => Carbon::now(),
+                'timezone' => $userTimezone
             ]);
 
             $isNewUser = true;

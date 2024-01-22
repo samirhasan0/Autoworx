@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('image')->default('/images/default.png');
             $table->string('password');
             $table->enum('provider', ['google', 'apple', 'email'])->default('email');
+            $table->string('timezone')->default('UTC');
             $table->rememberToken();
             $table->timestamps();
         });

@@ -9,6 +9,7 @@ export default function Register() {
     email: "",
     password: "",
     password_confirmation: "",
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   });
 
   useEffect(() => {

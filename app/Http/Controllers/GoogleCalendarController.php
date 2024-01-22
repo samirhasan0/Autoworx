@@ -279,12 +279,16 @@ class GoogleCalendarController extends Controller
             'summary' => $task->title,
             // TODO: store timezone in user's table rather than task's table
             'start' => [
-                'dateTime' => Carbon::createFromFormat('Y-m-d H:i', $task->date . ' ' . $task->start_time, $task->timezone)->format(DateTime::RFC3339),
-                'timeZone' => $task->timezone,
+                'dateTime' => Carbon::createFromFormat(
+                    'Y-m-d H:i',
+                    $task->date . ' ' . $task->start_time,
+                    $user->timezone
+                )->format(DateTime::RFC3339),
+                'timeZone' => $user->timezone,
             ],
             'end' => [
-                'dateTime' => Carbon::createFromFormat('Y-m-d H:i', $task->date . ' ' . $task->end_time, $task->timezone)->format(DateTime::RFC3339),
-                'timeZone' => $task->timezone,
+                'dateTime' => Carbon::createFromFormat('Y-m-d H:i', $task->date . ' ' . $task->end_time, $user->timezone)->format(DateTime::RFC3339),
+                'timeZone' => $user->timezone,
             ],
         ]);
     }

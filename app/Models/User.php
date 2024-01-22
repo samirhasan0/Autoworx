@@ -23,6 +23,8 @@ class User extends Authenticatable
         'password',
         'image',
         'provider',
+        'timezone',
+        'email_verified_at'
     ];
 
     /**
