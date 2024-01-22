@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\OauthToken;
 use App\Models\Task;
+use App\Models\TaskUsers;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Google_Client;
@@ -43,6 +44,7 @@ class GoogleCalendarController extends Controller
 
         GoogleCalendarController::storeUserToken($googleToken);
         GoogleCalendarController::getEventsAndStore();
+        GoogleCalendarController::syncEvents();
 
         return redirect(RouteServiceProvider::HOME);
     }
@@ -93,6 +95,35 @@ class GoogleCalendarController extends Controller
 
         return $events;
     }
+
+    // Sync the user's Google Calendar events with the database
+    // Create events in Google Calendar for tasks that don't have an event id
+    public static function syncEvents()
+    {
+        $user = Auth::user();
+        $token = self::getUserToken($user);
+
+        $client =  self::initializeGoogleClient();
+        $client->setAccessToken($token);
+        $service = new Google_Service_Calendar($client);
+
+        // Get the tasks for this user
+        $taskUsers = TaskUsers::where('user_id', $user->id)->where('event_id', '')->get();
+        $tasks = Task::whereIn('id', $taskUsers->pluck('task_id'))->get();
+
+        // Create events in google calendar
+        foreach ($tasks as $task) {
+            // Create event object
+            $event = self::getGoogleCalendarEvent($task, $user);
+
+            // Add the event to the user's primary calendar
+            $createdEvent = $service->events->insert('primary', $event);
+
+            // Update the task_users with the event id
+            TaskUsers::where('task_id', $task->id)->where('user_id', $user->id)->update(['event_id' => $createdEvent->id]);
+        }
+    }
+
 
     private static function storeEvents($events, $user)
     {
