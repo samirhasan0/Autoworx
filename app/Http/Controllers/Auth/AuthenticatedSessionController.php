@@ -98,25 +98,35 @@ class AuthenticatedSessionController extends Controller
         $oAuth2 = new \Google_Service_Oauth2($googleClient);
         $userInfo = $oAuth2->userinfo->get();
 
+        // whether user is new or old
+        $isNewUser = false;
+
         // check if user exists
+        $user = User::where('email', $userInfo->email)->first();
+
         // if not, create user
-        $user = User::firstOrCreate(
-            ['email' => $userInfo->email],
-            [
+        if (!$user) {
+            $user = User::create([
                 'name' => $userInfo->name,
+                'email' => $userInfo->email,
                 'password' => Hash::make(Str::random(24)),
                 'provider' => 'google',
                 'image' => $userInfo->picture,
-            ]
-        );
+            ]);
+
+            $isNewUser = true;
+        }
 
         // login user
         Auth::login($user, true);
 
         // store user token
         GoogleCalendarController::storeUserToken($googleToken);
-        // get events and store
-        GoogleCalendarController::getEventsAndStore();
+
+        if ($isNewUser) {
+            // get events and store
+            GoogleCalendarController::getEventsAndStore();
+        }
 
         // redirect to home
         return redirect(RouteServiceProvider::HOME);
