@@ -122,7 +122,15 @@ export default function Day() {
         {/* Tasks */}
         {dayTasks.map((task, index) => {
           const left = "130px";
-          const top = `${task.rowStartIndex * 45}px`;
+          let top = `${task.rowStartIndex * 45}px`;
+          // if the previous task starts at the same time as this task
+          // then move this task down
+          if (
+            index > 0 &&
+            task.rowStartIndex === dayTasks[index - 1].rowStartIndex
+          ) {
+            top = `${task.rowStartIndex * 45 + 20}px`;
+          }
           const height = `${
             (task.rowEndIndex - task.rowStartIndex + 1) * 45
           }px`;
@@ -180,7 +188,7 @@ export default function Day() {
             ? 140
             : rowIndex === 4
             ? 100
-            : 70;
+            : 25;
         const height = 300;
         const left = "130px";
         const top = `${

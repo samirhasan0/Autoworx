@@ -5,28 +5,43 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\User;
 use App\Http\Controllers\GoogleCalendarController;
+use App\Models\TaskUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display Task page.
      */
     public function index()
     {
+        // Tasks with assigned users
+        $taskWithAssignedUsers = [];
+
+        // Get all tasks
+        $tasks = Task::all();
+
+        // Loop through the tasks
+        foreach ($tasks as $task) {
+            // Get the assigned users
+            // convert assignedUsers to an array containing only user_id
+            $assignedUsers = TaskUsers::where('task_id', $task->id)->pluck('user_id')->toArray();
+
+            // Merge the assigned users with the task
+            $taskWithAssignedUsers[] = array_merge($task->toArray(), ['assigned_users' => $assignedUsers]);
+        }
+
+        // return the tasks
+        return Inertia::render('Task', [
+            'tasks' => $taskWithAssignedUsers,
+            'users' => User::all(),
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Create a new task.
      */
     public function store(Request $request)
     {
@@ -70,37 +85,43 @@ class TaskController extends Controller
 
         // add user_id to request
         $formFields["user_id"] = auth()->user()->id;
-        // add the current user to the assigned users
-        $formFields["assigned_users"] = auth()->user()->id . "," . $formFields["assigned_users"];
 
         // create the task
         $task = Task::create($formFields);
 
-        // create the event in google calendar
-        GoogleCalendarController::createEvent($task);
+        // assigned users for the task
+        $assignedUsers = $formFields["assigned_users"];
+
+        // Check if the assigned users is empty
+        if (empty($assignedUsers)) {
+            // assign the current user to the task
+            $assignedUsers = [auth()->user()->id];
+        } else {
+            // join current user with assigned users array
+            array_push($assignedUsers, auth()->user()->id);
+        }
+
+        foreach ($assignedUsers as $assignedUser) {
+            // get the user
+            $user = User::find($assignedUser);
+
+            // create the event for the user
+            $eventId = GoogleCalendarController::createEvent($task, $user);
+
+            // Create the task_user
+            TaskUsers::create([
+                'task_id' => $task->id,
+                'user_id' => $assignedUser,
+                'event_id' => $eventId,
+            ]);
+        }
 
         // redirect to task page
         return redirect()->back();
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Task $task)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Task $task)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update a task.
      */
     public function update(Request $request, $id)
     {
@@ -112,7 +133,7 @@ class TaskController extends Controller
             "end_time" => "required",
             "type" => "required|in:" . implode(",", Task::TYPES),
         ]);
-        $formFields["assigned_users"] = $request->input("assigned_users") ?? Auth()->user()->id;
+        $formFields["assigned_users"] = $request->input("assigned_users", "");
         $formFields["timezone"] = $request->input("timezone", "");
 
         // Check if the date is in the past
@@ -143,14 +164,60 @@ class TaskController extends Controller
             return redirect()->back()->withErrors(["start_time" => "A task already exists. Please choose another time"]);
         }
 
-        // get the task
+        // Find the task
         $task = Task::find($id);
 
-        // update the task
+        // Find the assigned users
+        $taskUsers = TaskUsers::where('task_id', $id)->get();
+
+        // Get the assigned users from the form
+        $assignedUsers = $formFields["assigned_users"];
+        // Find the difference between the assigned users and the new assigned users
+        $addedAssignedUsers = array_diff($assignedUsers, $taskUsers->pluck('user_id')->toArray());
+        $removedAssignedUsers = array_diff($taskUsers->pluck('user_id')->toArray(), $assignedUsers);
+
+        // Create the event for the added assigned users
+        foreach ($addedAssignedUsers as $addedAssignedUser) {
+            // Get the user
+            $user = User::find($addedAssignedUser);
+
+            // Create the event in google calendar
+            $eventId = GoogleCalendarController::createEvent($task, $user);
+
+            // Create the task_user to assign the user to the task
+            TaskUsers::create([
+                'task_id' => $id,
+                'user_id' => $addedAssignedUser,
+                'event_id' => $eventId,
+            ]);
+        }
+
+        // Delete the event for the removed assigned users
+        foreach ($removedAssignedUsers as $removedAssignedUser) {
+            // Get the user
+            $user = User::find($removedAssignedUser);
+
+            // Delete the event
+            GoogleCalendarController::deleteEvent($task, $user);
+
+            // Delete the task_user
+            TaskUsers::where('task_id', $id)->where('user_id', $removedAssignedUser)->delete();
+        }
+
+        // Update the task
         $task->update($formFields);
 
-        // Update the event in google calendar
-        GoogleCalendarController::updateEvent($task);
+        // Now get the assigned users from database
+        $taskUsers = TaskUsers::where('task_id', $id)->get();
+
+        // update the event for all currently assigned users
+        foreach ($taskUsers as $taskUser) {
+            // get the user
+            $user = User::find($taskUser->user_id);
+
+            // update the event
+            GoogleCalendarController::updateEvent($task, $user);
+        }
 
         // redirect to the task page
         return redirect()->back();
@@ -167,7 +234,6 @@ class TaskController extends Controller
             "tasks" => "required|array", // [[task_id, boolean], [task_id, boolean]]
         ]);
 
-
         // get the user
         $user = User::find($formFields["user"]);
 
@@ -175,6 +241,7 @@ class TaskController extends Controller
         foreach ($formFields["tasks"] as $taskData) {
             // get the task
             $task = Task::find($taskData[0]);
+            // should the user be assigned to the task?
             $shouldAssign = $taskData[1];
 
             // check if the task exists
@@ -182,27 +249,34 @@ class TaskController extends Controller
                 return redirect()->back()->withErrors(["tasks" => "One or more tasks do not exist"]);
             }
 
-            // convert assigned_users to an array
-            $assignedUsers = explode(',', $task->assigned_users);
+            // get the assigned users
+            $assignedUsers = TaskUsers::where('task_id', $task->id)->pluck('user_id')->toArray();
 
             // add or remove the user from these tasks
             if ($shouldAssign) {
                 // check if the user is already assigned to the task
                 // if not, assign the user to the task. else nothing
                 if (!in_array($user->id, $assignedUsers)) {
-                    $assignedUsers[] = $user->id;
+                    // create the event in google calendar
+                    $eventId = GoogleCalendarController::createEvent($task, $user);
+
+                    // Create the task_user
+                    TaskUsers::create([
+                        'task_id' => $task->id,
+                        'user_id' => $user->id,
+                        'event_id' => $eventId,
+                    ]);
                 }
             } else {
                 // check if the user is already assigned to the task
                 // if yes, remove the user from the task. else nothing
-                if (($key = array_search($user->id, $assignedUsers)) !== false) {
-                    unset($assignedUsers[$key]);
+                if (in_array($user->id, $assignedUsers)) {
+                    // delete the event from google calendar
+                    GoogleCalendarController::deleteEvent($task, $user);
+                    // Delete the task_user
+                    TaskUsers::where('task_id', $task->id)->where('user_id', $user->id)->delete();
                 }
             }
-
-            // update the assigned_users field
-            $task->assigned_users = implode(',', $assignedUsers);
-            $task->save();
         }
 
         // redirect to the user page
@@ -217,11 +291,23 @@ class TaskController extends Controller
         // get the task
         $task = Task::find($id);
 
+        // get the assigned users
+        $assignedUsers = TaskUsers::where('task_id', $id)->pluck('user_id')->toArray();
+
+        // Delete the event for all assigned users
+        foreach ($assignedUsers as $assignedUser) {
+            // Get the user
+            $user = User::find($assignedUser);
+
+            // Delete the event
+            GoogleCalendarController::deleteEvent($task, $user);
+
+            // Delete the task_user
+            TaskUsers::where('task_id', $id)->where('user_id', $assignedUser)->delete();
+        }
+
         // delete the task
         $task->delete();
-
-        // delete the event from google calendar
-        GoogleCalendarController::deleteEvent($task);
 
         // redirect to the task page
         return redirect()->back();

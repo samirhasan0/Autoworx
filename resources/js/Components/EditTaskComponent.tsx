@@ -2,7 +2,6 @@ import { useForm } from "@inertiajs/react";
 import { usePopupStore } from "@/stores/popup";
 import { useUsersStore } from "@/stores/users";
 import { ThreeDots } from "react-loader-spinner";
-import { TaskType } from "@/types/task";
 
 interface TaskForm {
   title: string;
@@ -10,7 +9,7 @@ interface TaskForm {
   start_time: string;
   end_time: string;
   type: string;
-  assigned_users: string;
+  assigned_users: number[];
   timezone: string;
 }
 
@@ -22,20 +21,13 @@ export default function EditTaskComponent({
   const { data: taskData, close } = usePopupStore();
   const { users, current } = useUsersStore();
 
-  const { data, setData, put, processing, errors, reset } = useForm<TaskForm>({
-    ...taskData,
-    assigned_users: (taskData.assigned_users as number[])
-      .filter((id) => !isNaN(id))
-      .map((id) => String(id))
-      .join(","),
-  });
+  const { data, setData, put, processing, errors, reset } =
+    useForm<TaskForm>(taskData);
 
   const usersToShow = users.filter((user) => user.id !== current?.id);
 
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    console.log("data: ", data);
 
     put(route("task.update", taskData.id), {
       onSuccess: () => {
@@ -167,28 +159,27 @@ export default function EditTaskComponent({
           <div className="flex flex-col p-2 font-bold gap-2 mt-2 h-40 overflow-y-auto">
             {usersToShow.map((user) => (
               <label
-                htmlFor={user.id.toString()}
+                htmlFor={user.id}
                 key={user.id}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 select-none"
               >
                 <input
                   type="checkbox"
                   name="assigned_users"
-                  id={user.id.toString()}
+                  id={user.id}
                   value={user.id}
-                  checked={assignedUsers.includes(user.id.toString())}
+                  checked={assignedUsers.includes(parseInt(user.id))}
                   onChange={(e) => {
-                    // comma separated string
+                    console.log("data checked: ", e.target.checked);
+                    console.log("assigned users: ", assignedUsers);
+
                     setData(
                       "assigned_users",
-                      assignedUsers.includes(e.target.value)
-                        ? assignedUsers
-                            .split(",")
-                            .filter((id) => id !== e.target.value)
-                            .join(",")
-                        : assignedUsers
-                        ? assignedUsers + "," + e.target.value
-                        : e.target.value
+                      e.target.checked
+                        ? [...assignedUsers, parseInt(e.target.value)]
+                        : assignedUsers.filter(
+                            (id) => id !== parseInt(e.target.value)
+                          )
                     );
                   }}
                 />

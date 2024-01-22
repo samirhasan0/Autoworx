@@ -22,16 +22,10 @@ export default function Task({
   const { setTasks } = useTaskStore();
   const { setUsers, setCurrentUser } = useUsersStore();
 
+  console.log("tasks", tasks);
+
   useEffect(() => {
-    // initially task.assigned_users would be string (comma separated)
-    // convert it to array of numbers
-    setTasks(
-      tasks.map((task) => ({
-        ...task,
-        // @ts-ignore
-        assigned_users: task.assigned_users.split(",").map(Number),
-      }))
-    );
+    setTasks(tasks);
     setUsers(users);
     setCurrentUser(auth.user);
   }, [tasks, users, auth]);

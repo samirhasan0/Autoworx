@@ -132,7 +132,7 @@ class GoogleCalendarController extends Controller
             $endDateTime = Carbon::parse($event->end->dateTime);
 
             // Update or create a task for each event
-            Task::updateOrCreate(
+            $task = Task::updateOrCreate(
                 ['title' => $event->getSummary(), 'user_id' => $user->id, 'date' => $startDateTime->toDateString()],
                 [
                     'start_time' => $startDateTime->toTimeString(),
@@ -143,17 +143,23 @@ class GoogleCalendarController extends Controller
                     'timezone' => '',
                 ]
             );
+
+            // Update or create a task user for each event
+            TaskUsers::updateOrCreate(
+                ['task_id' => $task->id, 'user_id' => $user->id],
+                ['event_id' => $event->id]
+            );
         }
     }
 
     // Create an event in the user's Google Calendar
-    public static function createEvent(Task $task)
+    public static function createEvent(Task $task, $user = null): string
     {
-        $user = Auth::user();
+        $user = $user ?? Auth::user();
         $token = self::getUserToken($user);
 
         // If user has not connected to google calendar, do nothing
-        if (!$token) return;
+        if (!$token) return '';
 
         $client = self::initializeGoogleClient();
         $client->setAccessToken($token);
@@ -165,14 +171,13 @@ class GoogleCalendarController extends Controller
         // Add the event to the user's primary calendar
         $createdEvent = $service->events->insert('primary', $event);
 
-        // Update the task with the Google Calendar event id
-        $task->update(['google_calendar_event_id' => $createdEvent->id]);
+        return $createdEvent->id;
     }
 
     // Delete an event from the user's Google Calendar
-    public static function deleteEvent(Task $task)
+    public static function deleteEvent(Task $task, $user = null)
     {
-        $user = Auth::user();
+        $user = $user ?? Auth::user();
         $token = self::getUserToken($user);
 
         // If user has not connected to google calendar, do nothing
@@ -182,20 +187,30 @@ class GoogleCalendarController extends Controller
         $client->setAccessToken($token);
         $service = new Google_Service_Calendar($client);
 
-        // Get the event id
-        $event_id = $task->google_calendar_event_id;
+        // Get the event id from the database
+        $eventId = TaskUsers::where('task_id', $task->id)->where('user_id', $user->id)->first()->event_id;
 
         // If event id is null, do nothing
-        if (!$event_id) return;
+        if (!$eventId) return;
 
-        // Delete the event from the user's primary calendar
-        $service->events->delete('primary', $event_id);
+        // Try to delete the event from the user's primary calendar
+        try {
+            // Delete the event from the user's primary calendar
+            $service->events->delete('primary', $eventId);
+        } catch (\Exception $e) {
+            // If the event is not found, do nothing
+            if ($e->getCode() == 410) {
+                return;
+            } else {
+                Log::error($e);
+            }
+        }
     }
 
     // Update an event in the user's Google Calendar
-    public static function updateEvent(Task $task)
+    public static function updateEvent(Task $task, $user = null)
     {
-        $user = Auth::user();
+        $user = $user ?? Auth::user();
         $token = self::getUserToken($user);
 
         // If user has not connected to google calendar, do nothing
@@ -205,17 +220,29 @@ class GoogleCalendarController extends Controller
         $client->setAccessToken($token);
         $service = new Google_Service_Calendar($client);
 
-        // Get the event id
-        $event_id = $task->google_calendar_event_id;
+        // Get the event id from the database
+        $eventId = TaskUsers::where('task_id', $task->id)->where('user_id', $user->id)->first()->event_id;
 
         // If event id is null, do nothing
-        if (!$event_id) return;
+        if (!$eventId) return;
 
         // Create the event object
         $event = self::getGoogleCalendarEvent($task, $user);
 
-        // Update the event in the user's primary calendar
-        $service->events->update('primary', $event_id, $event);
+        // Try to update the event in the user's primary calendar        
+        // Try-catching is necessary because if the event is deleted from the user's primary calendar,
+        // the event id will still be stored in the database, and the update function will throw an error
+        try {
+            // Update the event in the user's primary calendar
+            $service->events->update('primary', $eventId, $event);
+        } catch (\Exception $e) {
+            // If the event is not found, do nothing
+            if ($e->getCode() == 410) {
+                return;
+            } else {
+                Log::error($e);
+            }
+        }
     }
 
     // Get the user's google oauth2 token
@@ -250,6 +277,7 @@ class GoogleCalendarController extends Controller
     {
         return new Google_Service_Calendar_Event([
             'summary' => $task->title,
+            // TODO: store timezone in user's table rather than task's table
             'start' => [
                 'dateTime' => Carbon::createFromFormat('Y-m-d H:i', $task->date . ' ' . $task->start_time, $task->timezone)->format(DateTime::RFC3339),
                 'timeZone' => $task->timezone,

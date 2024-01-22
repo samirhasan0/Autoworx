@@ -235,12 +235,7 @@ Route::middleware('auth')->group(function () {
         ]
     ]);
     Route::inertia("/sales", "Sales");
-    Route::get("/task", function () {
-        return Inertia\Inertia::render("Task", [
-            "tasks" => App\Models\Task::all(),
-            "users" => App\Models\User::all(),
-        ]);
-    });
+    Route::get("/task", [TaskController::class, "index"])->name("task.index");
     Route::put("/task/{id}", [TaskController::class, "update"])->name("task.update");
     Route::delete("/task/{id}", [TaskController::class, "destroy"])->name("task.destroy");
     Route::inertia("analytics", "Analytics");

@@ -30,7 +30,7 @@ export default function AssignTask() {
   const usersToShow = users.filter((user) => user.id !== current?.id);
 
   const user = usersToShow.filter(
-    (user) => user.id === parseInt(taskData.assigned_users)
+    (user) => user.id === taskData.assigned_users[0]
   )[0];
 
   function handleSubmit(e: any) {

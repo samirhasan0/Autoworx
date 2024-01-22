@@ -19,7 +19,7 @@ export default function UserComponent({
   const { open } = usePopupStore();
 
   const userTasks = tasks.filter((task) =>
-    task.assigned_users.includes(user.id)
+    task.assigned_users.includes(parseInt(user.id))
   );
 
   return (
@@ -63,7 +63,7 @@ export default function UserComponent({
             className="bg-slate-500 rounded-2xl text-white text-[15px] py-1 mt-3 px-5"
             onClick={() =>
               open("ASSIGN_TASK", {
-                assigned_users: user.id.toString(),
+                assigned_users: [parseInt(user.id)],
                 only_one_user: true,
               })
             }

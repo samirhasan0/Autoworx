@@ -9,7 +9,7 @@ interface TaskForm {
   start_time: string;
   end_time: string;
   type: string;
-  assigned_users: string;
+  assigned_users: string[];
   timezone: string;
 }
 
@@ -52,7 +52,7 @@ export default function AddTaskComponent({
 
   // get the assigned user
   const assignedUser = usersToShow.filter(
-    (user) => user.id === parseInt(taskData.assigned_users)
+    (user) => user.id === data.assigned_users[0]
   )[0];
 
   return (
@@ -172,17 +172,14 @@ export default function AddTaskComponent({
                   id={user.id.toString()}
                   value={user.id}
                   onChange={(e) => {
-                    // comma separated string
+                    // array of string
                     setData(
                       "assigned_users",
-                      data.assigned_users.includes(e.target.value)
-                        ? data.assigned_users
-                            .split(",")
-                            .filter((id) => id !== e.target.value)
-                            .join(",")
-                        : data.assigned_users
-                        ? data.assigned_users + "," + e.target.value
-                        : e.target.value
+                      e.target.checked
+                        ? [...data.assigned_users, e.target.value]
+                        : data.assigned_users.filter(
+                            (id) => id !== e.target.value
+                          )
                     );
                   }}
                 />
@@ -203,11 +200,11 @@ export default function AddTaskComponent({
 
       {taskData.only_one_user && (
         // only show the user's name and image. no checkbox
-        <div className="flex items-center gap-2 bg-slate-100 rounded-md mb-5">
+        <div className="flex items-center gap-2 bg-slate-100 rounded-md mb-5 p-2">
           <img
             src={assignedUser.image}
             alt={assignedUser.name}
-            className="w-14 h-14 rounded-full"
+            className="w-12 h-12 rounded-full"
           />
           <span className="text-[19px]">{assignedUser.name}</span>
         </div>

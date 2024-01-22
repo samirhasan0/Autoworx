@@ -176,7 +176,15 @@ export default function Week() {
           // const left = `${145 * task.columnIndex + 100}px`;
           // left according to the cell width
           const left = `calc(10% + 12.9% * ${task.columnIndex})`;
-          const top = `${45 * task.rowStartIndex + 45}px`;
+          let top = `${45 * task.rowStartIndex + 45}px`;
+          // if the previous task starts at the same time as this task
+          // then move this task down
+          if (
+            index > 0 &&
+            task.rowStartIndex === weekTasks[index - 1].rowStartIndex
+          ) {
+            top = `${45 * task.rowStartIndex + 45 + 20}px`;
+          }
           const height = `${
             45 * (task.rowEndIndex - task.rowStartIndex + 1)
           }px`;
@@ -286,7 +294,10 @@ export default function Week() {
             <div className="flex justify-end text-[14px]">
               <button
                 className="flex items-center bg-[#24a0ff] text-white py-1 px-2 rounded-md mt-2"
-                onClick={() => open("EDIT_TASK", { ...task })}
+                onClick={() => {
+                  setHoveredTask(null);
+                  open("EDIT_TASK", { ...task });
+                }}
               >
                 <MdModeEdit />
                 Edit
