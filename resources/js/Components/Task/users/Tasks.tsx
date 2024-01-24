@@ -11,7 +11,7 @@ export default function Tasks() {
     <div className="relative bg-white app-shadow h-[93%] mt-5 rounded-[12px] p-3">
       <h2 className="text-black text-[19px]">Task List</h2>
 
-      <div className="flex flex-wrap mt-3 h-[92%] gap-3 overflow-y-auto">
+      <div className="flex flex-wrap mt-3 max-h-[92%] gap-3 overflow-y-auto">
         {tasks.map((task) => (
           <div
             key={task.id}
