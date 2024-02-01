@@ -259,7 +259,9 @@ export default function Day() {
             {/* Show users */}
             <div className="mt-3 h-[10rem] overflow-auto">
               {task.assigned_users.map((user_id: number) => {
-                const user = users.find((user) => user.id === user_id);
+                const user = users.find(
+                  (user) => parseInt(user.id) === user_id
+                );
                 if (!user) return null;
                 return (
                   <div
