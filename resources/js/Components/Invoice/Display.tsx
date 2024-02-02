@@ -51,7 +51,7 @@ export default function Display() {
 
   // Render component
   return (
-    <div className="w-[77vw] h-[80vh] mt-3 rounded-xl bg-white text-[#66738C] app-shadow px-5 pt-8 pb-5">
+    <div className="w-[77vw] h-[80vh] rounded-xl bg-white text-[#66738C] app-shadow px-5 pt-8 pb-5">
       <div className="h-full flex justify-center overflow-scroll">
         {dataSections.map(({ title, data }) => (
           <div className="flex-grow">
