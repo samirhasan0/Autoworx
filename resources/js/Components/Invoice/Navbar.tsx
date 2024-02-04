@@ -24,7 +24,7 @@ export default function Navbar() {
   const activeLink = LINKS.find((link) => link.link === currentPath);
 
   return (
-    <div className="flex ml-5 gap-5 relative">
+    <div className="flex ml-5 mt-5 gap-5 relative">
       {LINKS.map((link) => (
         <Link
           href={link.link}
