@@ -29,7 +29,7 @@ export default function Navbar() {
         <Link
           href={link.link}
           key={link.title}
-          className="px-5 py-1 invoice-link rounded-md rounded-br-none"
+          className="px-5 py-1 invoice-link rounded-md rounded-br-none text-base max-[1450px]:text-sm max-[1250px]:text-xs max-[1250px]:px-3"
           style={{
             backgroundColor:
               activeLink?.link === link.link ? "white" : "#6571FF",
