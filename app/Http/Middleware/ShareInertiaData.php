@@ -24,15 +24,10 @@ class ShareInertiaData
             ->where('provider', 'google')
             ->exists();
 
-        // Check if the user has connected their Calendly account
-        $hasCalendly = OauthToken::where('user_id', Auth::id())
-            ->where('provider', 'calendly')
-            ->exists();
 
         // Share the data with all Inertia views
         Inertia::share([
             'hasGoogleCalendar' => $hasGoogleCalendar,
-            'hasCalendly' => $hasCalendly,
         ]);
 
         return $next($request);

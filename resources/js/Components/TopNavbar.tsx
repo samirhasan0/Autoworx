@@ -4,7 +4,7 @@ import { usePage } from "@inertiajs/react";
 
 export default function TopNavbar() {
   const { props } = usePage();
-  const { hasGoogleCalendar, hasCalendly } = props;
+  const { hasGoogleCalendar } = props;
 
   return (
     <div className="h-[7vh] flex items-center p-5 justify-between pr-10">
@@ -27,16 +27,6 @@ export default function TopNavbar() {
           className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
         >
           Connect Google Calendar
-        </a>
-      )}
-
-      {/* Calendly Auth Button */}
-      {!hasCalendly && (
-        <a
-          href={route("auth.calendly")}
-          className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer"
-        >
-          Connect Calendly
         </a>
       )}
 

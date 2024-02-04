@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CalendlyController;
 use App\Http\Controllers\GoogleCalendarController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
@@ -11,14 +10,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use App\Models\OauthToken;
-use App\Providers\RouteServiceProvider;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Route;
-use GuzzleHttp\Client;
 
 Route::post('register', [RegisteredUserController::class, 'store'])->name('register');
 
@@ -86,10 +78,4 @@ Route::middleware('auth')->group(function () {
 
     // Handle Google Calendar OAuth2 callback
     Route::get('/auth/google/callback-calendar', [GoogleCalendarController::class, 'handleOauth']);
-
-    // Redirect to Calendly OAuth2 consent screen
-    Route::get('/redirect-to-calendly', [CalendlyController::class, 'redirectOauth'])->name('auth.calendly');
-
-    // Handle Calendly OAuth2 callback
-    Route::get('/auth/calendly/callback', [CalendlyController::class, 'handleOauth']);
 });
