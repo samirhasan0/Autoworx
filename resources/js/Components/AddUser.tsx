@@ -9,7 +9,8 @@ export default function AddUser() {
     name: "",
     email: "",
     password: "",
-    password_confirmation: "",
+    password_confirmation: "",    
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   });
   const { close } = usePopupStore();
 

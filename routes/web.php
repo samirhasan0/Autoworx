@@ -141,7 +141,10 @@ Route::middleware('auth')->group(function () {
     })->name("client.email");
 
     Route::inertia("/communication/internal", "Internal", [
-        "users" => App\Models\User::all(),
+        // "users" => App\Models\User::all(),
+        // exclude current user
+
+        "users" => App\Models\User::where("id", "!=", auth()->id())->get(),
     ]);
     Route::inertia("/communication/collaboration", "Collaboration", [
         // company: id, name, image, users: [id, name: User[1,2,3], image, ]

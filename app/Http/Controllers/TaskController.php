@@ -235,7 +235,8 @@ class TaskController extends Controller
         ]);
 
         // get the user
-        $user = User::find($formFields["user"]);
+        $user = User::find($formFields["user"])->first();
+
 
         // loop through the tasks
         foreach ($formFields["tasks"] as $taskData) {
