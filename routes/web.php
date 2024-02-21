@@ -242,7 +242,10 @@ Route::middleware('auth')->group(function () {
     Route::put("/task/{id}", [TaskController::class, "update"])->name("task.update");
     Route::delete("/task/{id}", [TaskController::class, "destroy"])->name("task.destroy");
     Route::inertia("analytics", "Analytics");
-    Route::inertia("invoice", "Invoice");
+    Route::inertia("invoice", "Invoice/Index");
+    Route::inertia("invoice/create", "Invoice/Create");
+    Route::inertia("invoice/estimate", "Invoice/Estimate");
+    Route::inertia("invoice/inspection", "Invoice/Inspection");
 
     Route::post("/task", [TaskController::class, "store"])->name("task.store");
     Route::put("/task", [TaskController::class, "assignTasks"])->name("task.assign");

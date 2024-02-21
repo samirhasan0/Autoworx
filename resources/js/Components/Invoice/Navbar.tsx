@@ -17,7 +17,7 @@ export default function Navbar() {
     },
     {
       title: "Digital Inspection",
-      link: "/invoice/digital-inspection",
+      link: "/invoice/inspection",
     },
   ];
   const currentPath = window.location.pathname;
