@@ -24,7 +24,16 @@ class User extends Authenticatable
         'image',
         'provider',
         'timezone',
-        'email_verified_at'
+        'email_verified_at',
+        'role',
+        'phone',
+        'address',
+        'city',
+        'state',
+        'zip',
+        'employee_type',
+        'employee_department',
+
     ];
 
     /**

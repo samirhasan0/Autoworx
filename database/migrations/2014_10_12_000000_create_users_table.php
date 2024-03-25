@@ -20,6 +20,18 @@ return new class extends Migration
             $table->string('password');
             $table->enum('provider', ['google', 'apple', 'email'])->default('email');
             $table->string('timezone')->default('UTC');
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('zip')->nullable();
+            // TODO: probably need to improve this
+            $table->enum('role', ['admin', 'employee'])->default('admin');
+            $table->enum('employee_type', ['Salary', 'Hourly', 'Contract Based', 'None'])->default('None');
+            $table->enum('employee_department', [
+                'Sales', 'Management', 'Workshop', 'None'
+            ])->default('None');
+            $table->string('work_order_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
