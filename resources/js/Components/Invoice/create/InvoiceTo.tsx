@@ -13,8 +13,8 @@ export default function InvoiceTo() {
   const { open } = usePopupStore();
 
   return (
-    <div className="h-[63%] w-full app-shadow rounded-xl p-3">
-      <div className="flex justify-between items-center">
+    <div className="h-[63%] w-full app-shadow rounded-xl p-3 invoice-to">
+      <div className="flex justify-between items-center form-head">
         <h2 className="uppercase text-black font-bold text-sm">Invoice to</h2>
         <button
           className="bg-[#4DB6AC] px-7 py-2 text-white rounded-md text-xs"
@@ -24,8 +24,8 @@ export default function InvoiceTo() {
         </button>
       </div>
 
-      <form className="flex flex-row gap-3 mt-5 w-full">
-        <div className="flex flex-col gap-4 text-black text-sm w-[30%]">
+      <form className="flex flex-row gap-3 mt-5 w-full form">
+        <div className="flex flex-col gap-4 text-black text-sm w-[30%] form-divide">
           <label htmlFor="sales-person">Salesperson:</label>
           <label htmlFor="invoice">Invoice ID:</label>
           <label htmlFor="date">Issue Date:</label>
@@ -35,9 +35,9 @@ export default function InvoiceTo() {
           <label htmlFor="address">Address:</label>
         </div>
 
-        <div className="flex flex-col gap-3 w-[70%]">
-          <p className="text-black font-bold">{auth.user.name}</p>
-          <p className="text-black font-bold">{invoiceId}</p>
+        <div className="flex flex-col gap-3 w-[70%] form-divide-input">
+          <p className="text-black font-bold text-sm">{auth.user.name}</p>
+          <p className="text-black font-bold text-sm">{invoiceId}</p>
           <input
             type="date"
             id="date"

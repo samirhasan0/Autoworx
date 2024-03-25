@@ -65,12 +65,12 @@ export default function ServiceSection() {
   ]);
 
   return (
-    <div className="h-[75%] w-full app-shadow rounded-xl p-3">
+    <div className="h-[76%] w-full app-shadow rounded-xl p-3">
       <ServiceSearch />
       <Services />
 
       {/* Attachments */}
-      <div className="h-40 mt-3 flex gap-4">
+      <div className="h-40 mt-3 flex gap-4 attach">
         {/* Photo selector */}
         {/* TODO */}
         <div className="w-[75%] h-full invoice-inner-shadow bg-[#EFEFEF] flex items-center justify-center flex-col relative max-[1700px]:w-[65%]">
@@ -164,7 +164,7 @@ export default function ServiceSection() {
       <div className="flex flex-row gap-4 mt-3">
         <AdditionalInfo />
         {/* Create order button */}
-        <div className="w-[23%]">
+        <div className="w-[23%] service-form">
           {/* Select Status */}
           <select
             name="status"
@@ -185,7 +185,7 @@ export default function ServiceSection() {
           </select>
 
           {/* Checkbox */}
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex items-center gap-2 mt-2 checkbox">
             <input
               type="checkbox"
               name="send-email"

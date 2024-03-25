@@ -43,7 +43,7 @@ export default function Services() {
   }
 
   return (
-    <div className="h-44 overflow-y-scroll relative overflow-x-auto">
+    <div className="h-44 overflow-y-scroll relative overflow-x-auto services">
       <table className="mt-3 w-full table-fixed">
         <thead>
           <tr className="text-xs text-white uppercase flex gap-2">
@@ -75,7 +75,6 @@ export default function Services() {
                   {service.description}
                 </td>
                 <td className={`text-left ${bgColor} p-2 w-[10%]`}>
-                  {/* {service.price} */}
                   <input
                     type="number"
                     className="w-full py-0 px-1 bg-transparent border-none"
@@ -90,7 +89,6 @@ export default function Services() {
                   />
                 </td>
                 <td className={`text-left ${bgColor} p-2 w-[10%]`}>
-                  {/* {service.quantity} */}
                   <input
                     type="number"
                     className="w-full py-0 px-1 bg-transparent border-none"
@@ -105,7 +103,6 @@ export default function Services() {
                   />
                 </td>
                 <td className={`text-left ${bgColor} p-2 w-[10%]`}>
-                  {/* {service.discount} */}
                   <input
                     type="number"
                     className="w-full py-0 px-1 bg-transparent border-none"
@@ -124,7 +121,6 @@ export default function Services() {
                 </td>
 
                 <td className={`text-center ${bgColor} p-2 w-[10%]`}>
-                  {/* Delete button */}
                   <button
                     className="text-red-500 text-base"
                     onClick={() => removeService(service.id)}

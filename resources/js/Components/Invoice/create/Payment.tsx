@@ -25,7 +25,7 @@ export default function Payment() {
   }, [payments]);
 
   return (
-    <div className="app-shadow w-full h-[25%] rounded-xl p-3">
+    <div className="app-shadow w-full h-[25%] rounded-xl p-3 payment">
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="uppercase text-black font-bold text-sm">
@@ -40,7 +40,7 @@ export default function Payment() {
       </div>
 
       {/* Table */}
-      <div className="h-24 overflow-scroll mt-3">
+      <div className="h-24 overflow-scroll mt-3 payment-table">
         <table className="w-full table-fixed">
           <thead>
             <tr className="text-xs text-white uppercase flex gap-1">

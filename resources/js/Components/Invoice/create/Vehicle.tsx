@@ -10,8 +10,8 @@ export default function Vehicle() {
   const { errors } = props as any;
 
   return (
-    <div className="h-[37%] w-full app-shadow rounded-xl p-3">
-      <div className="flex justify-between items-center">
+    <div className="h-[37%] w-full app-shadow rounded-xl p-3 vehicle">
+      <div className="flex justify-between items-center form-head">
         <h2 className="uppercase text-black font-bold text-sm">
           Vehicle details
         </h2>
@@ -23,8 +23,8 @@ export default function Vehicle() {
         </button>
       </div>
 
-      <form className="flex flex-row gap-3 mt-5">
-        <div className="flex flex-col gap-4 text-black text-sm w-[30%]">
+      <form className="flex flex-row gap-3 mt-5 form">
+        <div className="flex flex-col gap-4 text-black text-sm w-[30%] form-divide">
           <label htmlFor="sales-person">Year:</label>
           <label htmlFor="invoice">Make:</label>
           <label htmlFor="date">Model:</label>
@@ -32,7 +32,7 @@ export default function Vehicle() {
           <label htmlFor="mobile">License Plate:</label>
         </div>
 
-        <div className="flex flex-col gap-3 w-[70%]">
+        <div className="flex flex-col gap-3 w-[70%] form-divide-input">
           <input
             type="number"
             id="year"

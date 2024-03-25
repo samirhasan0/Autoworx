@@ -21,7 +21,7 @@ export default function AdditionalInfo() {
       <textarea
         name="notes"
         id="notes"
-        className="w-[25%] resize-none h-24 p-1 px-2 invoice-inner-shadow border-none text-black"
+        className="w-[25%] resize-none h-24 p-1 px-2 invoice-inner-shadow border-none text-black additional"
         placeholder="Add Notes"
         value={additional.notes}
         onChange={(e) =>
@@ -33,7 +33,7 @@ export default function AdditionalInfo() {
       <textarea
         name="terms"
         id="terms"
-        className="w-[25%] resize-none h-24 p-1 px-2 invoice-inner-shadow border-none text-black"
+        className="w-[25%] resize-none h-24 p-1 px-2 invoice-inner-shadow border-none text-black additional"
         placeholder="Terms & Conditions"
         value={additional.terms}
         onChange={(e) =>
@@ -45,7 +45,7 @@ export default function AdditionalInfo() {
       <textarea
         name="policy"
         id="policy"
-        className="w-[25%] resize-none h-24 p-1 px-2 invoice-inner-shadow border-none text-black"
+        className="w-[25%] resize-none h-24 p-1 px-2 invoice-inner-shadow border-none text-black additional"
         placeholder="Policy & Conditions"
         value={additional.policy}
         onChange={(e) =>
