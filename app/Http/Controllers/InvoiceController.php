@@ -14,6 +14,7 @@ use App\Models\WorkOrder;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
 
 class InvoiceController extends Controller
 {
@@ -74,9 +75,6 @@ class InvoiceController extends Controller
 
     public function store(Request $request)
     {
-
-        // dd($request->all());
-
         $validatedData = $request->validate([
             'invoiceId' => 'required|max:14',
 
@@ -165,7 +163,6 @@ class InvoiceController extends Controller
         }
 
         // Name of the photo
-
         $fileName = $request->file('photo') ? $validatedData['invoiceId'] . '.' . $request->file('photo')->extension() : null;
 
         // Create invoice
@@ -214,10 +211,34 @@ class InvoiceController extends Controller
             Cache::forever('policy', $validatedData['additional_policy']);
         }
 
-
         // Upload photo
         if ($request->hasFile('photo')) {
             $request->file('photo')->storeAs('public/invoices', $fileName);
+        }
+
+        // dd($services);
+
+        // If send_mail is true, send an email to the customer
+        if ($validatedData['sendMail']) {
+            $services = Service::whereIn('id', json_decode($invoice->service_ids))->get();
+
+            // generate pdf
+            $pdf = Pdf::loadView('invoice', [
+                'invoice' => $invoice,
+                'customer' => $customer,
+                'vehicle' => $vehicle,
+                'services' => $services,
+                'settings' => Settings::first(),
+            ]);
+
+            // send email
+            Mail::send('emails.invoice', [
+                'customer' => $customer,
+            ], function ($message) use ($customer, $pdf) {
+                $message->to($customer->email, $customer->name)
+                    ->subject('Invoice from Autoworx')
+                    ->attachData($pdf->output(), 'invoice.pdf');
+            });
         }
 
         return redirect()->route('invoice.show', $invoice->invoice_id);
