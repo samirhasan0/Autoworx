@@ -47,7 +47,24 @@ export const NAV_LINKS: NavItem[] = [
     path: "/analytics",
   },
   {
+    name: "Employee List",
+    path: "/employee",
+  },
+  {
+    name: "Customer List",
+    path: "/customer",
+  },
+  {
     name: "Invoice",
     path: "/invoice",
+  },
+  {
+    name: "Inventory Management",
+    subItems: [
+      {
+        name: "Service List",
+        path: "/inventory/service",
+      },
+    ],
   },
 ];

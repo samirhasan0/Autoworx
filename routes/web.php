@@ -1,9 +1,16 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\WorkOrderController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 /*
 |--------------------------------------------------------------------------
@@ -242,14 +249,56 @@ Route::middleware('auth')->group(function () {
     Route::put("/task/{id}", [TaskController::class, "update"])->name("task.update");
     Route::delete("/task/{id}", [TaskController::class, "destroy"])->name("task.destroy");
     Route::inertia("analytics", "Analytics");
-    Route::inertia("invoice", "Invoice/Index");
-    Route::inertia("invoice/create", "Invoice/Create");
+    Route::get("invoice", [InvoiceController::class, "index"])->name("invoice.index");
+    Route::post("/invoice", [InvoiceController::class, "store"])->name("invoice.store");
+    Route::inertia("invoice/create", "Invoice/Create", [
+        "customers" => App\Models\Customer::all(),
+        "vehicles" => App\Models\Vehicle::all(),
+        "services" => App\Models\Service::all(),
+        "notes" => Cache::get("notes"),
+        "terms" => Cache::get("terms"),
+        "policy" => Cache::get("policy"),
+    ]);
+    Route::get("/invoice/{id}/edit", [InvoiceController::class, "edit"])->name("invoice.edit");
+    Route::put("/invoice/{id}", [InvoiceController::class, "update"])->name("invoice.update");
     Route::inertia("invoice/estimate", "Invoice/Estimate");
     Route::inertia("invoice/inspection", "Invoice/Inspection");
+    Route::get("/invoice/{id}", [InvoiceController::class, "show"])->name("invoice.show");
+    Route::get("/invoice/{id}/pdf", [InvoiceController::class, "pdf"])->name("invoice.pdf");
 
     Route::post("/task", [TaskController::class, "store"])->name("task.store");
     Route::put("/task", [TaskController::class, "assignTasks"])->name("task.assign");
+
+    Route::inertia("/customer", "Customer", [
+        "customers" => App\Models\Customer::all(),
+    ]);
+    Route::post('/customer', [CustomerController::class, 'store'])->name('customer.store');
+    Route::put('/customer/{id}', [CustomerController::class, 'update'])->name('customer.update');
+    Route::delete('/customer/{id}', [CustomerController::class, 'destroy'])->name('customer.destroy');
+
+    Route::get('/vehicle', [VehicleController::class, 'index'])->name('vehicle.index');
+    Route::post('/vehicle', [VehicleController::class, 'store'])->name('vehicle.store');
+
+    Route::inertia("/employee", "Employee", [
+        "employees" => EmployeeController::index()
+    ]);
+    Route::post('/employee', [EmployeeController::class, 'store'])->name('employee.store');
+    Route::put('/employee/{id}', [EmployeeController::class, 'update'])->name('employee.update');
+    Route::delete('/employee/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
+
+    Route::inertia("/inventory/service", "Inventory/Service", [
+        "services" => App\Models\Service::all(),
+    ]);
+    Route::post('/inventory/service', [ServiceController::class, 'store'])->name('service.store');
+    Route::put('/inventory/service/{id}', [ServiceController::class, 'update'])->name('service.update');
+    Route::delete('/inventory/service/{id}', [ServiceController::class, 'destroy'])->name('service.destroy');
+
+    Route::post("/work-order", [WorkOrderController::class, "store"])->name("work_orders.store");
+    Route::put("/work-order/{workOrder}", [WorkOrderController::class, "update"])->name("work_orders.update");
+    Route::delete("/work-order/{workOrder}", [WorkOrderController::class, "destroy"])->name("work_orders.destroy");
+    Route::delete("/work-order/remove/{employee}", [WorkOrderController::class, "removeEmployee"])->name("work_orders.remove_employee");
 });
+
 
 
 require __DIR__ . '/auth.php';
