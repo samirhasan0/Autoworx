@@ -9,4 +9,5 @@ declare global {
   var route: typeof ziggyRoute;
   var Ziggy: ZiggyConfig;
   var Echo: any;
+  var Pusher: any;
 }

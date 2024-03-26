@@ -44,43 +44,43 @@
             <div>
                 <div style="margin-top: 1.25rem; float: left; width: 33%;">
                     <h3 style="font-weight: bold;">Invoice To:</h3>
-                    <p>{{ $customer->name }}</p>
-                    <p>{{ $customer->email }}</p>
-                    <p>{{ $customer->mobile }}</p>
+                    <p>{{ $customer['name'] }}</p>
+                    <p>{{ $customer['name'] }}</p>
+                    <p>{{ $customer['mobile'] }}</p>
                 </div>
 
                 <div style="float: left; width: 33%;">
                     <h3 style="font-weight: bold;">Vehicle Details:</h3>
                     <div>
                         <span style="font-weight: bold;">Year: </span>
-                        <span>{{ $vehicle->year }}</span>
+                        <span>{{ $vehicle['year'] }}</span>
                     </div>
                     <div>
                         <span style="font-weight: bold;">Make: </span>
-                        <span>{{ $vehicle->make }}</span>
+                        <span>{{ $vehicle['make'] }}</span>
                     </div>
                     <div>
                         <span style="font-weight: bold;">Model: </span>
-                        <span>{{ $vehicle->model }}</span>
+                        <span>{{ $vehicle['model'] }}</span>
                     </div>
                     <div>
                         <span style="font-weight: bold;">VIN: </span>
-                        <span>{{ $vehicle->vin }}</span>
+                        <span>{{ $vehicle['vin'] }}</span>
                     </div>
                     <div>
                         <span style="font-weight: bold;">License Plate: </span>
-                        <span>{{ $vehicle->license }}</span>
+                        <span>{{ $vehicle['license'] }}</span>
                     </div>
                 </div>
 
                 <div style="float: left; width: 33%;">
                     <div>
                         <span style="font-weight: bold;">Invoice Number: </span>
-                        <span>{{ $invoice->invoice_id }}</span>
+                        <span>{{ $invoice['invoice_id'] }}</span>
                     </div>
                     <div>
                         <span style="font-weight: bold;">Invoice Date: </span>
-                        <span>{{ $invoice->created_at }}</span>
+                        <span>{{ $invoice['created_at'] }}</span>
                     </div>
                     <div>
                         <span style="font-weight: bold;">Bill Status: </span>
@@ -88,7 +88,7 @@
                     </div>
                     <div>
                         <span style="font-weight: bold;">Order Status: </span>
-                        <span>{{ $invoice->status }}</span>
+                        <span>{{ $invoice['status'] }}</span>
                     </div>
                 </div>
                 <div style="clear: both;"></div>
@@ -115,23 +115,23 @@
                         <tr>
                             <td style="text-align: left; padding: 0.5rem 1rem; border: 1px solid #CBD5E1;">
                                 <div>
-                                    <p style="float: left;">{{ $service->name }}</p>
+                                    <p style="float: left;">{{ $service['name'] }}</p>
                                     <p style="color: #4A5568; font-size: 0.875rem; clear: both;">
-                                        {{ $service->description }}</p>
+                                        {{ $service['description'] }}</p>
                                 </div>
                             </td>
 
                             <td style="text-align: center; padding: 0.5rem 1rem; border: 1px solid #CBD5E1;">
-                                {{ $service->quantity }}</td>
+                                {{ $service['quantity'] }}</td>
 
                             <td style="text-align: center; padding: 0.5rem 1rem; border: 1px solid #CBD5E1;">
-                                ${{ $service->price }}</td>
+                                ${{ $service['price'] }}</td>
 
                             <td style="text-align: center; padding: 0.5rem 1rem; border: 1px solid #CBD5E1;">
-                                ${{ $service->discount }}</td>
+                                ${{ $service['discount'] }}</td>
 
                             <td style="text-align: center; padding: 0.5rem 1rem; border: 1px solid #CBD5E1;">
-                                ${{ $service->total }}</td>
+                                ${{ $service['total'] }}</td>
                         </tr>
                         <tr style="border: 1px solid #CBD5E1;">
                             <td style="padding: 0.5rem 1rem;"></td>
@@ -141,7 +141,7 @@
                                 style="padding: 0.5rem 1rem; border: 1px solid #CBD5E1; border-left: 0; font-weight: bold;">
                                 Subtotal</td>
                             <td style="text-align: center; padding: 0.5rem 1rem; border: 1px solid #CBD5E1;">
-                                ${{ $invoice->subtotal }}
+                                ${{ $invoice['subtotal'] }}
                             </td>
                         </tr>
                         <tr style="border: 1px solid #CBD5E1;">
@@ -152,7 +152,7 @@
                                 style="padding: 0.5rem 1rem; border: 1px solid #CBD5E1; border-left: 0; font-weight: bold;">
                                 Discount</td>
                             <td style="text-align: center; padding: 0.5rem 1rem; border: 1px solid #CBD5E1;">
-                                ${{ $invoice->discount }}
+                                ${{ $service['discount'] }}
                             </td>
                         </tr>
                         <tr style="border: 1px solid #CBD5E1;">
@@ -163,7 +163,7 @@
                                 style="padding: 0.5rem 1rem; border: 1px solid #CBD5E1; border-left: 0; font-weight: bold;">
                                 Tax</td>
                             <td style="text-align: center; padding: 0.5rem 1rem; border: 1px solid #CBD5E1;">
-                                ${{ $invoice->tax }}
+                                ${{ $invoice['tax'] }}
                             </td>
                         </tr>
                         <tr style="border: 1px solid #CBD5E1;">
@@ -175,7 +175,7 @@
                                 Grand Total
                             </td>
                             <td style="text-align: center; padding: 0.5rem 1rem; border: 1px solid #CBD5E1;">
-                                ${{ $invoice->grand_total }}
+                                ${{ $invoice['grand_total'] }}
                             </td>
                         </tr>
                         <tr style="border: 1px solid #CBD5E1;">
@@ -186,7 +186,7 @@
                                 style="padding: 0.5rem 1rem; border: 1px solid #CBD5E1; border-left: 0; font-weight: bold;">
                                 Deposit</td>
                             <td style="text-align: center; padding: 0.5rem 1rem; border: 1px solid #CBD5E1;">
-                                ${{ $invoice->deposit }}
+                                ${{ $invoice['deposit'] }}
                             </td>
                         </tr>
                         <tr style="border: 1px solid #CBD5E1;">
@@ -197,7 +197,7 @@
                                 style="padding: 0.5rem 1rem; border: 1px solid #CBD5E1; border-left: 0; font-weight: bold;">
                                 Due</td>
                             <td style="text-align: center; padding: 0.5rem 1rem; border: 1px solid #CBD5E1;">
-                                ${{ $invoice->due }}
+                                ${{ $invoice['due'] }}
                             </td>
                         </tr>
                     @endforeach
@@ -208,12 +208,12 @@
         <div style="width: 100%; margin-top: 2.5rem;">
             <div style="width: 50%; float: left;">
                 <h3 style="font-weight: bold;">Terms & Conditions</h3>
-                <p>{{ $invoice->terms }}</p>
+                <p>{{ $invoice['terms'] }}</p>
             </div>
 
             <div style="width: 50%; float: right;">
                 <h3 style="font-weight: bold;">Privacy Policy</h3>
-                <p>{{ $invoice->policy }}</p>
+                <p>{{ $invoice['policy'] }}</p>
             </div>
             <div style="clear: both;"></div>
         </div>
@@ -222,7 +222,7 @@
             <p style="float: left;">Thank you for shopping from Autoworx</p>
 
             <div style="float: left; width: 30%; margin-left: 2rem; text-align: center;">
-                <p>{{ $invoice->salesperson }}</p>
+                <p>{{ $invoice['salesperson'] }}</p>
                 <div style="border: 1px dotted #000000; width: 100%;"></div>
                 <p>Salesperson</p>
             </div>

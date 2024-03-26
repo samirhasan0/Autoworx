@@ -244,6 +244,111 @@ class InvoiceController extends Controller
         return redirect()->route('invoice.show', $invoice->invoice_id);
     }
 
+    // Similar to store function, but instead of storing data, it directly downloads the pdf
+    public function estimate(Request $request)
+    {
+        $validatedData = $request->validate([
+            'invoiceId' => 'required|max:14',
+
+            'customer_name' => 'required',
+            'customer_email' => 'required|email',
+            'customer_mobile' => 'required',
+            'customer_address' => 'nullable',
+            'customer_city' => 'nullable',
+            'customer_state' => 'nullable',
+            'customer_zip' => 'nullable',
+
+            'vehicle_make' => 'required',
+            'vehicle_model' => 'required',
+            'vehicle_year' => 'nullable',
+            'vehicle_vin' => 'nullable',
+            'vehicle_license' => 'nullable',
+
+            'services' => 'required|array',
+            'services.*.name' => 'required',
+            'services.*.price' => 'required',
+            'services.*.description' => 'nullable',
+            'services.*.quantity' => 'nullable',
+            'services.*.discount' => 'nullable',
+            'services.*.total' => 'nullable',
+
+            'photo' => 'nullable',
+
+            'pricing_subtotal' => 'nullable',
+            'pricing_discount' => 'nullable',
+            'pricing_tax' => 'nullable',
+            'pricing_grand_total' => 'nullable',
+            'pricing_deposit' => 'nullable',
+            'pricing_due' => 'nullable',
+
+            'additional_notes' => 'nullable',
+            'additional_terms' => 'nullable',
+            'additional_policy' => 'nullable',
+
+            'payments' => 'required|array',
+            'payments.*.method' => 'required',
+            'payments.*.amount' => 'required',
+            'payments.*.type' => 'nullable',
+            'payments.*.note' => 'nullable',
+
+            'status' => 'required',
+            'sendMail' => 'required',
+
+            'issue_date' => 'required',
+            'salesperson' => 'required',
+        ]);
+
+        // Generate the pdf
+        $pdf = Pdf::loadView('invoice', [
+            'invoice' => [
+                'invoice_id' => $validatedData['invoiceId'],
+                'issue_date' => $validatedData['issue_date'],
+                'salesperson' => $validatedData['salesperson'],
+                'status' => $validatedData['status'],
+                'send_mail' => $validatedData['sendMail'],
+                'notes' => $validatedData['additional_notes'] ?? '',
+                'terms' => $validatedData['additional_terms'] ?? '',
+                'policy' => $validatedData['additional_policy'] ?? '',
+                'subtotal' => $validatedData['pricing_subtotal'],
+                'discount' => $validatedData['pricing_discount'],
+                'tax' => $validatedData['pricing_tax'],
+                'grand_total' => $validatedData['pricing_grand_total'],
+                'deposit' => $validatedData['pricing_deposit'],
+                'due' => $validatedData['pricing_due'],
+                'created_at' => now(),
+            ],
+            'customer' => [
+                'name' => $validatedData['customer_name'],
+                'email' => $validatedData['customer_email'],
+                'mobile' => $validatedData['customer_mobile'],
+                'address' => $validatedData['customer_address'] ?? '',
+                'city' => $validatedData['customer_city'] ?? '',
+                'state' => $validatedData['customer_state'] ?? '',
+                'zip' => $validatedData['customer_zip'] ?? '',
+            ],
+            'vehicle' => [
+                'make' => $validatedData['vehicle_make'],
+                'model' => $validatedData['vehicle_model'],
+                'year' => $validatedData['vehicle_year'] ?? '',
+                'vin' => $validatedData['vehicle_vin'] ?? '',
+                'license' => $validatedData['vehicle_license'] ?? '',
+            ],
+            'services' => $validatedData['services'],
+            'settings' => Settings::first(),
+        ]);
+
+        $fileName = $validatedData['invoiceId'] . '.pdf';
+
+        // save the pdf
+        $pdf->save(storage_path('app/public/temp/' . $fileName));
+
+        // redirect the user
+        // return redirect()->route('invoice.download', $fileName);
+        return redirect()->back();
+    }
+
+
+
     public function edit($id)
     {
         $invoice = Invoice::where('invoice_id', $id)->first();

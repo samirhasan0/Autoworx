@@ -114,6 +114,12 @@ export default function OrderButton() {
       post(route("invoice.store"));
     } else if (lastPath === "edit") {
       put(route("invoice.update", invoiceId));
+    } else if (lastPath === "estimate") {
+      post(route("estimate"), {
+        onSuccess: () => {
+          window.location.href = `/invoice/download/${data.invoiceId}`;
+        },
+      });
     } else {
       console.error("Invalid route");
     }
@@ -124,7 +130,7 @@ export default function OrderButton() {
       className="bg-[#03A7A2] text-white w-full h-9 rounded-md mt-2 app-shadow"
       onClick={handleSubmit}
     >
-      {lastPath === "create" ? "Create" : "Update"} Invoice
+      {lastPath === "edit" ? "Update" : "Create"} Invoice
     </button>
   );
 }

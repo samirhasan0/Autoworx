@@ -262,11 +262,33 @@ Route::middleware('auth')->group(function () {
     ]);
     Route::get("/invoice/{id}/edit", [InvoiceController::class, "edit"])->name("invoice.edit");
     Route::put("/invoice/{id}", [InvoiceController::class, "update"])->name("invoice.update");
-    Route::inertia("invoice/estimate", "Invoice/Estimate");
+    Route::inertia("invoice/estimate", "Invoice/Estimate", [
+        "customers" => App\Models\Customer::all(),
+        "vehicles" => App\Models\Vehicle::all(),
+        "services" => App\Models\Service::all(),
+        "notes" => Cache::get("notes"),
+        "terms" => Cache::get("terms"),
+        "policy" => Cache::get("policy"),
+    ]);
+    Route::post("/invoice/estimate", [InvoiceController::class, "estimate"])->name("estimate");
     Route::inertia("invoice/inspection", "Invoice/Inspection");
     Route::get("/invoice/{id}", [InvoiceController::class, "show"])->name("invoice.show");
     Route::get("/invoice/{id}/pdf", [InvoiceController::class, "pdf"])->name("invoice.pdf");
+    Route::get("/invoice/download/{fileName}", function () {
+        $fileName = request()->fileName . ".pdf";
+        $file = storage_path("app/public/temp/$fileName");
 
+        $headers = [
+            "Content-Type" => "application/pdf",
+        ];
+
+        $response = response()->download($file, $fileName, $headers)->deleteFileAfterSend(true);
+
+        return $response;
+        // return response()->json([
+        //     "message" => "Download not implemented",
+        // ]);
+    })->name("invoice.download");
     Route::post("/task", [TaskController::class, "store"])->name("task.store");
     Route::put("/task", [TaskController::class, "assignTasks"])->name("task.assign");
 
