@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\Message;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\InvoiceController;
@@ -297,6 +298,33 @@ Route::middleware('auth')->group(function () {
     Route::put("/work-order/{workOrder}", [WorkOrderController::class, "update"])->name("work_orders.update");
     Route::delete("/work-order/{workOrder}", [WorkOrderController::class, "destroy"])->name("work_orders.destroy");
     Route::delete("/work-order/remove/{employee}", [WorkOrderController::class, "removeEmployee"])->name("work_orders.remove_employee");
+
+    Route::get("/messages/{userId}", function ($userId) {
+        // Get all messages between the current user and the user with the given ID
+        $messages = App\Models\Message::where(function ($query) use ($userId) {
+            $query->where("from", auth()->user()->id)->where("user_id", $userId);
+        })->orWhere(function ($query) use ($userId) {
+            $query->where("from", $userId)->where("user_id", auth()->user()->id);
+        })->get();
+
+        return response()->json($messages);
+    })->name("messages.index");
+
+    Route::post("/send-message", function (Request $request) {
+        // Save the message
+        $message = new App\Models\Message();
+        $message->user_id = $request->userId;
+        $message->message = $request->message;
+        $message->from = auth()->user()->id;
+        $message->save();
+
+        event(new Message(
+            auth()->user()->id,
+            $request->userId,
+            $request->message
+        ));
+        return redirect()->back();
+    })->name("messages.store");
 });
 
 

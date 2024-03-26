@@ -1,7 +1,14 @@
 import { cn } from "@/lib/cn";
-import { usePage } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import InlineSVG from "react-inlinesvg";
 import { FaTimes } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { ThreeDots } from "react-loader-spinner";
+
+interface Message {
+  message: string;
+  sender: "CLIENT" | "USER";
+}
 
 export default function MessageBox({
   user,
@@ -14,55 +21,72 @@ export default function MessageBox({
   const { auth } = props as any;
   const { user: authUser } = auth;
 
-  const messages = [
-    {
-      id: 1,
-      message: "Hello",
-      sender: "client",
-    },
-    {
-      id: 2,
-      message: "Hello there. How are you? I am fine. What about you?",
-      sender: "user",
-    },
-    {
-      id: 3,
-      message: "I am fine. Thanks for asking. What about you?",
-      sender: "client",
-    },
-    {
-      id: 4,
-      message: "I am fine. Thanks for asking. What about you?",
-      sender: "client",
-    },
-    {
-      id: 5,
-      message: "I am fine. Thanks for asking. What about you?",
-      sender: "client",
-    },
-    {
-      id: 6,
-      message: "Hello there. How are you? I am fine. What about you?",
-      sender: "user",
-    },
+  const { data, setData, post, errors, reset, processing } = useForm({
+    message: "",
+    userId: user.id,
+  });
 
-    {
-      id: 7,
-      message: "I am fine. Thanks for asking. What about you?",
-      sender: "client",
-    },
-    {
-      id: 8,
-      message: "Hello there. How are you? I am fine. What about you?",
-      sender: "user",
-    },
+  const [messages, setMessages] = useState<Message[]>([]);
 
-    {
-      id: 9,
-      message: "I am fine. Thanks for asking. What about you?",
-      sender: "client",
-    },
-  ];
+  // fetch messages
+  useEffect(() => {
+    async function fetchMessages() {
+      const response = await fetch(
+        route("messages.index", { userId: user.id })
+      );
+      const data = await response.json();
+      const messages = data.map((message: any) => ({
+        message: message.message,
+        sender: message.from == authUser.id ? "USER" : "CLIENT",
+      }));
+
+      setMessages(messages);
+    }
+
+    fetchMessages();
+  }, [user.id]);
+
+  useEffect(() => {
+    const channel = window.Echo.private(`chat.${authUser.id}`);
+
+    channel.listen(".message", (e: any) => {
+      console.log(e);
+
+      if (e.from === user.id) {
+        setMessages((messages) => [
+          ...messages,
+          {
+            message: e.message,
+            sender: "CLIENT",
+          },
+        ]);
+      }
+    });
+
+    // Unsubscribe from the channel when the component is unmounted
+    return () => {
+      channel.stopListening(".message");
+    };
+  }, []);
+
+  useEffect(() => console.log(messages), [messages]);
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    reset("message");
+    post(route("messages.store"), {
+      onSuccess: () => {
+        setMessages((messages) => [
+          ...messages,
+          {
+            message: data.message,
+            sender: "USER",
+          },
+        ]);
+      },
+    });
+  };
+
   return (
     <div className="w-[18%] h-[40vh] overflow-hidden app-shadow rounded-lg bg-white max-[1400px]:w-[40%] border">
       {/* Chat Header */}
@@ -74,7 +98,9 @@ export default function MessageBox({
             className="w-[25px] h-[25px] rounded-full"
           />
           <div className="flex flex-col">
-            <p className="font-bold text-[10px]">{user.name}</p>
+            <p className="font-bold text-[10px]">
+              {user.name} - {user.id}
+            </p>
           </div>
         </div>
 
@@ -95,30 +121,32 @@ export default function MessageBox({
 
       {/* Messages */}
       <div className="h-[82%] overflow-y-scroll">
-        {messages.map((message: any, index: number) => (
+        {messages.map((message: Message, index: number) => (
           <div
-            key={message.id}
+            key={index}
             className={`flex items-center p-1 ${
-              message.sender === "client" ? "justify-start" : "justify-end"
+              message.sender === "CLIENT" ? "justify-start" : "justify-end"
             }`}
           >
             <div className="flex items-center gap-2 p-1">
-              {message.sender === "client" &&
+              {/* TODO: */}
+              {/* {message.sender === "client" &&
                 messages[index - 1]?.sender !== "client" && (
                   <img
                     src={user.image}
                     alt="user"
                     className="w-[30px] h-[30px] rounded-full"
                   />
-                )}
+                )} */}
 
               <p
                 className={cn(
                   "text-[10px] rounded-xl p-2 max-w-[220px]",
-                  message.sender === "client"
+                  message.sender === "CLIENT"
                     ? "bg-[#D9D9D9] text-slate-800"
-                    : "bg-[#006D77] text-white",
-                  messages[index - 1]?.sender === "client" && "ml-[58px]"
+                    : "bg-[#006D77] text-white"
+                  // TODO
+                  // messages[index - 1]?.sender === "client" && "ml-[58px]"
                 )}
               >
                 {message.message}
@@ -129,15 +157,24 @@ export default function MessageBox({
       </div>
 
       {/* Input */}
-      <form className="flex items-center gap-2 bg-[#D9D9D9] h-[8%] p-2">
+      <form
+        className="flex items-center gap-2 bg-[#D9D9D9] h-[8%] p-2"
+        onSubmit={handleSubmit}
+      >
         <InlineSVG src="/icons/attachment.svg" className="w-5  h-5" />
         <input
           type="text"
           placeholder="Send Message..."
           className="w-full rounded-md text-[8px] px-1 py-0 border-none"
+          value={data.message}
+          onChange={(e) => setData("message", e.target.value)}
         />
         <button className="">
-          <InlineSVG src="/icons/send.svg" className="w-4 h-4" />
+          {processing ? (
+            <ThreeDots color="green" height={10} width={10} />
+          ) : (
+            <InlineSVG src="/icons/send.svg" className="w-4 h-4" />
+          )}
         </button>
       </form>
     </div>
