@@ -90,7 +90,18 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
     set((state) => ({
       services: state.services.filter((service) => service.id !== id),
     })),
-  setPricing: (pricing) => set({ pricing }),
+  setPricing: (pricing) =>
+    set({
+      // cast to number
+      pricing: {
+        subtotal: Number(pricing.subtotal),
+        discount: Number(pricing.discount),
+        tax: Number(pricing.tax),
+        grand_total: Number(pricing.grand_total),
+        deposit: Number(pricing.deposit),
+        due: Number(pricing.due),
+      },
+    }),
   setAdditional: (additional) => set({ additional }),
   setStatus: (status) => set({ status }),
   setSendMail: (sendMail) => set({ sendMail }),

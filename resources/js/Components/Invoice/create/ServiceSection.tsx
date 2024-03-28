@@ -20,13 +20,17 @@ export default function ServiceSection() {
     setPhoto,
   } = useInvoiceStore();
 
-  const [discountType, setDiscountType] = useState<"Percentage" | "Amount">(
-    "Percentage"
+  const [discountType, setDiscountType] = useState<"PERCENTAGE" | "AMOUNT">(
+    "PERCENTAGE"
   );
 
   useEffect(() => {
     // subtotal would be the sum of all services
-    const subtotal = services.reduce((acc, service) => acc + service.total, 0);
+    // const subtotal = services.reduce((acc, service) => acc + service.total, 0);
+    // cast to number and then sum
+    const subtotal = services
+      .map((service) => Number(service.total))
+      .reduce((acc, total) => acc + total, 0);
     let gt;
 
     // calculate grand total with tax
@@ -36,17 +40,20 @@ export default function ServiceSection() {
       gt = subtotal;
     }
 
-    console.log("Discount: ", pricing.discount);
-
     // calculate grand total with discount
-    if (discountType === "Percentage") {
+    if (discountType === "PERCENTAGE") {
       gt = gt - subtotal * ((pricing.discount ? pricing.discount : 0) / 100);
     } else {
-      gt = gt - pricing.discount ? pricing.discount : 0;
+      gt = gt - (pricing.discount ? pricing.discount : 0);
     }
 
     // calculate due
     const due = gt - (pricing.deposit ? pricing.deposit : 0);
+
+    console.log("Calculation done!");
+    console.log("Grand Total: ", gt);
+    console.log("Due: ", due);
+    console.log("Pricing: ", pricing);
 
     setPricing({
       ...pricing,
@@ -63,6 +70,8 @@ export default function ServiceSection() {
     pricing.deposit,
     discountType,
   ]);
+
+  console.log("pricing: ", pricing);
 
   return (
     <div className="h-[76%] w-full app-shadow rounded-xl p-3">
@@ -123,8 +132,8 @@ export default function ServiceSection() {
                 value={discountType}
                 onChange={(e) => setDiscountType(e.target.value as any)}
               >
-                <option value="percentage">%</option>
-                <option value="amount">$</option>
+                <option value="PERCENTAGE">%</option>
+                <option value="AMOUNT">$</option>
               </select>
             </div>
 
