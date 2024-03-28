@@ -14,6 +14,7 @@ use App\Models\WorkOrder;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 
 class InvoiceController extends Controller
@@ -125,6 +126,9 @@ class InvoiceController extends Controller
             'issue_date' => 'required',
             'salesperson' => 'required',
         ]);
+
+        // parse the issue date
+        $validatedData['issue_date'] = Carbon::parse($validatedData['issue_date']);
 
         // Search customers by mobile number, if not exists create a new customer
         $customer = Customer::where('mobile', $validatedData['customer_mobile'])->first();
