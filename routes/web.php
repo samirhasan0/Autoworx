@@ -148,12 +148,13 @@ Route::middleware('auth')->group(function () {
         return redirect("/communication/client/$id");
     })->name("client.email");
 
-    Route::inertia("/communication/internal", "Internal", [
-        // "users" => App\Models\User::all(),
-        // exclude current user
 
-        "users" => App\Models\User::where("id", "!=", auth()->id())->get(),
-    ]);
+    Route::get("/communication/internal", function () {
+        return Inertia\Inertia::render("Internal", [
+            "users" => App\Models\User::where("id", "!=", auth()->id())->get(),
+        ]);
+    });
+
     Route::inertia("/communication/collaboration", "Collaboration", [
         // company: id, name, image, users: [id, name: User[1,2,3], image, ]
         "companies" => [
@@ -252,24 +253,30 @@ Route::middleware('auth')->group(function () {
     Route::inertia("analytics", "Analytics");
     Route::get("invoice", [InvoiceController::class, "index"])->name("invoice.index");
     Route::post("/invoice", [InvoiceController::class, "store"])->name("invoice.store");
-    Route::inertia("invoice/create", "Invoice/Create", [
-        "customers" => App\Models\Customer::all(),
-        "vehicles" => App\Models\Vehicle::all(),
-        "services" => App\Models\Service::all(),
-        "notes" => Cache::get("notes"),
-        "terms" => Cache::get("terms"),
-        "policy" => Cache::get("policy"),
-    ]);
+
+    Route::get("/invoice/create", function () {
+        return Inertia\Inertia::render("Invoice/Create", [
+            "customers" => App\Models\Customer::all(),
+            "vehicles" => App\Models\Vehicle::all(),
+            "services" => App\Models\Service::all(),
+            "notes" => Cache::get("notes"),
+            "terms" => Cache::get("terms"),
+            "policy" => Cache::get("policy"),
+        ]);
+    });
     Route::get("/invoice/{id}/edit", [InvoiceController::class, "edit"])->name("invoice.edit");
     Route::put("/invoice/{id}", [InvoiceController::class, "update"])->name("invoice.update");
-    Route::inertia("invoice/estimate", "Invoice/Estimate", [
-        "customers" => App\Models\Customer::all(),
-        "vehicles" => App\Models\Vehicle::all(),
-        "services" => App\Models\Service::all(),
-        "notes" => Cache::get("notes"),
-        "terms" => Cache::get("terms"),
-        "policy" => Cache::get("policy"),
-    ]);
+
+    Route::get("/invoice/estimate", function () {
+        return Inertia\Inertia::render("Invoice/Estimate", [
+            "customers" => App\Models\Customer::all(),
+            "vehicles" => App\Models\Vehicle::all(),
+            "services" => App\Models\Service::all(),
+            "notes" => Cache::get("notes"),
+            "terms" => Cache::get("terms"),
+            "policy" => Cache::get("policy"),
+        ]);
+    });
     Route::post("/invoice/estimate", [InvoiceController::class, "estimate"])->name("estimate");
     Route::inertia("invoice/inspection", "Invoice/Inspection");
     Route::get("/invoice/{id}", [InvoiceController::class, "show"])->name("invoice.show");
@@ -285,16 +292,16 @@ Route::middleware('auth')->group(function () {
         $response = response()->download($file, $fileName, $headers)->deleteFileAfterSend(true);
 
         return $response;
-        // return response()->json([
-        //     "message" => "Download not implemented",
-        // ]);
     })->name("invoice.download");
     Route::post("/task", [TaskController::class, "store"])->name("task.store");
     Route::put("/task", [TaskController::class, "assignTasks"])->name("task.assign");
 
-    Route::inertia("/customer", "Customer", [
-        "customers" => App\Models\Customer::all(),
-    ]);
+
+    Route::get('/customer', function () {
+        return Inertia\Inertia::render("Customer", [
+            "customers" => App\Models\Customer::all(),
+        ]);
+    });
     Route::post('/customer', [CustomerController::class, 'store'])->name('customer.store');
     Route::put('/customer/{id}', [CustomerController::class, 'update'])->name('customer.update');
     Route::delete('/customer/{id}', [CustomerController::class, 'destroy'])->name('customer.destroy');
@@ -302,16 +309,20 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicle', [VehicleController::class, 'index'])->name('vehicle.index');
     Route::post('/vehicle', [VehicleController::class, 'store'])->name('vehicle.store');
 
-    Route::inertia("/employee", "Employee", [
-        "employees" => EmployeeController::index()
-    ]);
+    Route::get('/employee', function () {
+        return Inertia\Inertia::render("Employee", [
+            "employees" => EmployeeController::index(),
+        ]);
+    });
     Route::post('/employee', [EmployeeController::class, 'store'])->name('employee.store');
     Route::put('/employee/{id}', [EmployeeController::class, 'update'])->name('employee.update');
     Route::delete('/employee/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
 
-    Route::inertia("/inventory/service", "Inventory/Service", [
-        "services" => App\Models\Service::all(),
-    ]);
+    Route::get('/inventory/service', function () {
+        return Inertia\Inertia::render("Inventory/Service", [
+            "services" => App\Models\Service::all(),
+        ]);
+    });
     Route::post('/inventory/service', [ServiceController::class, 'store'])->name('service.store');
     Route::put('/inventory/service/{id}', [ServiceController::class, 'update'])->name('service.update');
     Route::delete('/inventory/service/{id}', [ServiceController::class, 'destroy'])->name('service.destroy');
