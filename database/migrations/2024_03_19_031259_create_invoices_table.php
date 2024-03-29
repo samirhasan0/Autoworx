@@ -31,6 +31,7 @@ return new class extends Migration
             $table->text('terms')->nullable();
             $table->text('policy')->nullable();
             $table->date('issue_date')->default(now());
+            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
             $table->text('salesperson');
         });
     }

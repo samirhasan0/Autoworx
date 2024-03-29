@@ -10,11 +10,14 @@ class WorkOrderController extends Controller
 {
     public function store(Request $request)
     {
+        $user = auth()->user();
+        $company_id = $user->company_id;
 
         $validated = $request->validate([
             'invoice_id' => 'required|integer',
             'employee_id' => 'required|integer',
         ]);
+        $validated['company_id'] = $company_id;
 
         $workOrder = new WorkOrder();
         $workOrder->invoice_id = $validated['invoice_id'];

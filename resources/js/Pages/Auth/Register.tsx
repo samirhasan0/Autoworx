@@ -10,6 +10,7 @@ export default function Register() {
     password: "",
     password_confirmation: "",
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    company: "",
   });
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function Register() {
 
       <form
         onSubmit={submit}
-        className="max-w-md mx-auto mt-56 border p-6 rounded-md"
+        className="max-w-md mx-auto mt-44 border p-6 rounded-lg"
       >
         <h1 className="text-2xl font-semibold mb-4 text-center">Register</h1>
 
@@ -69,6 +70,26 @@ export default function Register() {
             required
           />
           {errors.email && <div className="text-red-500">{errors.email}</div>}
+        </div>
+
+        <div className="mt-4">
+          <label htmlFor="company" className="block mb-2">
+            Company
+          </label>
+
+          <input
+            id="company"
+            type="text"
+            name="company"
+            value={data.company}
+            className="mt-1 block w-full"
+            autoComplete="organization"
+            onChange={(e) => setData("company", e.target.value)}
+            required
+          />
+          {errors.company && (
+            <div className="text-red-500">{errors.company}</div>
+          )}
         </div>
 
         <div className="mt-4">

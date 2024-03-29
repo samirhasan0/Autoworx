@@ -5,12 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Settings extends Model
+class Company extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'contact',
-        'company_id'
-    ];
+    protected $fillable = ['name'];
 }

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->enum('type', ['event', 'appointment', 'task']);
+            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

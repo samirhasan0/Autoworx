@@ -32,6 +32,7 @@ return new class extends Migration
                 'Sales', 'Management', 'Workshop', 'None'
             ])->default('None');
             $table->string('work_order_id')->nullable();
+            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
             $table->rememberToken();
             $table->timestamps();
         });

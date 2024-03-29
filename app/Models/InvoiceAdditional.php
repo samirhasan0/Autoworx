@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Vehicle extends Model
+class InvoiceAdditional extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'year',
-        'make',
-        'model',
-        'vin',
-        'license',
-        'company_id'
+        'company_id',
+        'note',
+        'terms',
+        'policy',
     ];
 }

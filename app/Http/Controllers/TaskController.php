@@ -17,11 +17,13 @@ class TaskController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
+        $company_id = $user->company_id;
         // Tasks with assigned users
         $taskWithAssignedUsers = [];
 
-        // Get all tasks
-        $tasks = Task::all();
+        // Get all tasks for the company
+        $tasks = Task::where('company_id', $company_id)->get();
 
         // Loop through the tasks
         foreach ($tasks as $task) {
@@ -45,6 +47,9 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        $user = auth()->user();
+        $company_id = $user->company_id;
+
         // validate the request
         $formFields = $request->validate([
             "title" => "required",
@@ -54,7 +59,8 @@ class TaskController extends Controller
             "type" => "required|in:" . implode(",", Task::TYPES),
         ]);
         $formFields["assigned_users"] = $request->input("assigned_users", "");
-        $formFields["timezone"] = $request->input("timezone", "");
+        $formFields["timezone"] = $request->input("timezone", ""); // TODO
+        $formFields["company_id"] = $company_id;
 
         // Check if the date is in the past
         if (strtotime($formFields["date"]) < strtotime(date("Y-m-d"))) {

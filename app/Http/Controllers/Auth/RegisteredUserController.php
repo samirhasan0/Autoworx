@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -37,13 +38,21 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             // TODO: take timezone whenever user logs in
             'timezone' => 'required|string|max:255',
+            'company' => 'required|string|max:255',
         ]);
 
+        // Create the company
+        $company = Company::create([
+            'name' => $request->company,
+        ]);
+
+        // Create the user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'timezone' => $request->timezone,
+            'company_id' => $company->id,
         ]);
 
         event(new Registered($user));

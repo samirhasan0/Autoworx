@@ -16,6 +16,7 @@ class Customer extends Model
         'address',
         'city',
         'state',
-        'zip'
+        'zip',
+        'company_id'
     ];
 }

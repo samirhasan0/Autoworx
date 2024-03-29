@@ -203,7 +203,7 @@ export default function Sales() {
               </p>
             </h2>
 
-            <ul className="mt-5 flex flex-col gap-3 h-[38%] overflow-auto p-1">
+            <ul className="mt-5 flex flex-col gap-3 h-[21%] overflow-auto p-1">
               {item.leads.map((lead, index) => (
                 <li
                   key={index}

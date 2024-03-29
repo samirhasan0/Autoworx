@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('city');
             $table->string('state');
             $table->string('zip');
+            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

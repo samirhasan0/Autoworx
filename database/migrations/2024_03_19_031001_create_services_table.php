@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->decimal('discount');
             $table->decimal('total');
+            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
         });
     }
 

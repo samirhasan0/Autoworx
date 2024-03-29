@@ -33,7 +33,7 @@ class User extends Authenticatable
         'zip',
         'employee_type',
         'employee_department',
-
+        'company_id'
     ];
 
     /**

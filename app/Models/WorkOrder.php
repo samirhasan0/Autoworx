@@ -12,6 +12,7 @@ class WorkOrder extends Model
     protected $fillable = [
         'invoice_id',
         'active_status',
-        'deleted_at'
+        'deleted_at',
+        'company_id'
     ];
 }

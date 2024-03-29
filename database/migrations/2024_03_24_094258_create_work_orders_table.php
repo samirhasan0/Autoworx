@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('invoice_id');
             $table->enum('active_status', ['Active', 'Archived']);
             $table->date('deleted_at')->nullable();
+            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

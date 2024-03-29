@@ -10,7 +10,11 @@ class EmployeeController extends Controller
 {
     public static function index()
     {
+        $user = auth()->user();
+        $company_id = $user->company_id;
+
         $employees = User::where('role', 'employee')
+            ->where('company_id', $company_id)
             ->select('id', 'name', 'email', 'phone', 'address', 'city', 'state', 'zip', 'employee_type', 'employee_department')
             ->get();
         return $employees;
@@ -22,7 +26,7 @@ class EmployeeController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|confirmed|min:8',
-            'phone' => 'required',
+            'phone' => 'required|unique:users',
             'address' => 'required|max:255',
             'city' => 'required|max:255',
             'state' => 'required|max:255',
@@ -30,6 +34,9 @@ class EmployeeController extends Controller
             'employee_type' => 'required|in:Salary,Hourly,Contract Based',
             'employee_department' => 'required|in:Sales,Management,Workshop',
         ]);
+
+        $user = auth()->user();
+        $validatedData['company_id'] = $user->company_id;
 
         $employee = new User;
         $employee->fill($validatedData);

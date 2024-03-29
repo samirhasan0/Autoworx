@@ -15,6 +15,7 @@ class Service extends Model
         'price',
         'quantity',
         'discount',
-        'total'
+        'total',
+        'company_id'
     ];
 }

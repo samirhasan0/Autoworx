@@ -28,5 +28,6 @@ class Invoice extends Model
         'policy',
         'issue_date',
         'salesperson',
+        'company_id'
     ];
 }

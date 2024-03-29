@@ -16,6 +16,7 @@ class Payment extends Model
         'amount',
         'note',
         'date',
+        'company_id'
     ];
 
     public function invoice()

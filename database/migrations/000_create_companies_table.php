@@ -11,14 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vehicles', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->integer('year');
-            $table->string('make');
-            $table->string('model');
-            $table->string('vin');
-            $table->string('license');
-            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -28,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vehicles');
+        Schema::dropIfExists('companies');
     }
 };

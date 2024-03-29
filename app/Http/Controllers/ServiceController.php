@@ -9,6 +9,9 @@ class ServiceController extends Controller
 {
     public function store(Request $request)
     {
+        $user = auth()->user();
+        $company_id = $user->company_id;
+
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'description' => 'required',
@@ -17,6 +20,8 @@ class ServiceController extends Controller
             'discount' => 'required|numeric',
             'total' => 'required|numeric',
         ]);
+
+        $validatedData['company_id'] = $company_id;
 
         $service = new Service;
         $service->fill($validatedData);

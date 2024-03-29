@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\models\Customer;
+use App\Models\InvoiceAdditional;
 use App\models\Vehicle;
 use App\models\Service;
 use App\models\Settings;
 use App\Models\User;
 use App\Models\WorkOrder;
-use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -21,13 +21,16 @@ class InvoiceController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        $company_id = $user->company_id;
+
         // need: invoice_id, customer_name, vehicle_model, issue_date, status, customer_email, customer_id, grand_total
-        // get all invoices
-        $invoices = Invoice::all();
-        // get all customers
-        $customers = Customer::all();
-        // get all vehicles
-        $vehicles = Vehicle::all();
+        // get all invoices of the company
+        $invoices = Invoice::where('company_id', $company_id)->get();
+        // get all customers of the company
+        $customers = Customer::where('company_id', $company_id)->get();
+        // get all vehicles of the company
+        $vehicles = Vehicle::where('company_id', $company_id)->get();
         // get all services
 
         // combine all data
@@ -72,10 +75,15 @@ class InvoiceController extends Controller
             'work_orders' => $work_orders,
             'employees' => $employees,
         ]);
+
+        // TODO: if the invoice is not found, or the user is not authorized, return invoice error
     }
 
     public function store(Request $request)
     {
+        $user = auth()->user();
+        $company_id = $user->company_id;
+
         $validatedData = $request->validate([
             'invoiceId' => 'required|max:14',
 
@@ -126,6 +134,9 @@ class InvoiceController extends Controller
             'issue_date' => 'required',
             'salesperson' => 'required',
         ]);
+
+        // Add company_id to the validated data
+        $validatedData['company_id'] = $company_id;
 
         // parse the issue date
         $validatedData['issue_date'] = Carbon::parse($validatedData['issue_date']);
@@ -204,15 +215,24 @@ class InvoiceController extends Controller
             ]);
         }
 
-        // Save notes, terms, and policy in cache
-        if ($validatedData['additional_notes']) {
-            Cache::forever('notes', $validatedData['additional_notes']);
-        }
-        if ($validatedData['additional_terms']) {
-            Cache::forever('terms', $validatedData['additional_terms']);
-        }
-        if ($validatedData['additional_policy']) {
-            Cache::forever('policy', $validatedData['additional_policy']);
+
+        // Get the InvoiceAdditional model
+        $invoiceAdditional = InvoiceAdditional::where('company_id', $company_id)->first();
+
+        // If the model does not exist, create a new one, otherwise update the existing one
+        if (!$invoiceAdditional) {
+            InvoiceAdditional::create([
+                'company_id' => $company_id,
+                'note' => $validatedData['additional_notes'] ?? '',
+                'terms' => $validatedData['additional_terms'] ?? '',
+                'policy' => $validatedData['additional_policy'] ?? '',
+            ]);
+        } else {
+            $invoiceAdditional->update([
+                'note' => $validatedData['additional_notes'] ?? '',
+                'terms' => $validatedData['additional_terms'] ?? '',
+                'policy' => $validatedData['additional_policy'] ?? '',
+            ]);
         }
 
         // Upload photo
@@ -361,8 +381,6 @@ class InvoiceController extends Controller
         $current_services = Service::whereIn('id', json_decode($invoice->service_ids))->get();
         $current_payments = Payment::where('invoice_id', $invoice->id)->get();
 
-
-
         return Inertia::render('Invoice/Edit', [
             'invoice' => $invoice,
             'customer' => $customer,
@@ -374,6 +392,8 @@ class InvoiceController extends Controller
             "vehicles" => Vehicle::all(),
             "services" => Service::all(),
         ]);
+
+        // TODO: if the invoice is not found, or the user is not authorized, return invoice error
     }
 
     public function update(Request $request, $id)
@@ -515,15 +535,26 @@ class InvoiceController extends Controller
             ]);
         }
 
-        // Save notes, terms, and policy in cache
-        if ($validatedData['additional_notes']) {
-            Cache::forever('notes', $validatedData['additional_notes']);
-        }
-        if ($validatedData['additional_terms']) {
-            Cache::forever('terms', $validatedData['additional_terms']);
-        }
-        if ($validatedData['additional_policy']) {
-            Cache::forever('policy', $validatedData['additional_policy']);
+        $user = auth()->user();
+        $company_id = $user->company_id;
+
+        // Get the InvoiceAdditional model
+        $invoiceAdditional = InvoiceAdditional::where('company_id', $company_id)->first();
+
+        // If the model does not exist, create a new one, otherwise update the existing one
+        if (!$invoiceAdditional) {
+            InvoiceAdditional::create([
+                'company_id' => $company_id,
+                'note' => $validatedData['additional_notes'] ?? '',
+                'terms' => $validatedData['additional_terms'] ?? '',
+                'policy' => $validatedData['additional_policy'] ?? '',
+            ]);
+        } else {
+            $invoiceAdditional->update([
+                'note' => $validatedData['additional_notes'] ?? '',
+                'terms' => $validatedData['additional_terms'] ?? '',
+                'policy' => $validatedData['additional_policy'] ?? '',
+            ]);
         }
 
         // Upload photo

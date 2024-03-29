@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\WorkOrderController;
+use App\Models\InvoiceAdditional;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 /*
 |--------------------------------------------------------------------------
@@ -255,26 +255,46 @@ Route::middleware('auth')->group(function () {
     Route::post("/invoice", [InvoiceController::class, "store"])->name("invoice.store");
 
     Route::get("/invoice/create", function () {
+        $user = auth()->user();
+        $company_id = $user->company_id;
+
+        // Get Invoice Additional
+        $additional = InvoiceAdditional::where("company_id", $company_id)->first();
+
+        $note = $additional->note ?? "";
+        $terms = $additional->terms ?? "";
+        $policy = $additional->policy ?? "";
+
         return Inertia\Inertia::render("Invoice/Create", [
-            "customers" => App\Models\Customer::all(),
-            "vehicles" => App\Models\Vehicle::all(),
-            "services" => App\Models\Service::all(),
-            "notes" => Cache::get("notes"),
-            "terms" => Cache::get("terms"),
-            "policy" => Cache::get("policy"),
+            "customers" => App\Models\Customer::where("company_id", $company_id)->get(),
+            "vehicles" => App\Models\Vehicle::where("company_id", $company_id)->get(),
+            "services" => App\Models\Service::where("company_id", $company_id)->get(),
+            "notes" => $note,
+            "terms" => $terms,
+            "policy" => $policy,
         ]);
     });
     Route::get("/invoice/{id}/edit", [InvoiceController::class, "edit"])->name("invoice.edit");
     Route::put("/invoice/{id}", [InvoiceController::class, "update"])->name("invoice.update");
 
     Route::get("/invoice/estimate", function () {
+        $user = auth()->user();
+        $company_id = $user->company_id;
+
+        $additional = InvoiceAdditional::where("company_id", $company_id)->first();
+
+        $note = $additional->note ?? "";
+        $terms = $additional->terms ?? "";
+        $policy = $additional->policy ?? "";
+
         return Inertia\Inertia::render("Invoice/Estimate", [
-            "customers" => App\Models\Customer::all(),
-            "vehicles" => App\Models\Vehicle::all(),
-            "services" => App\Models\Service::all(),
-            "notes" => Cache::get("notes"),
-            "terms" => Cache::get("terms"),
-            "policy" => Cache::get("policy"),
+            "customers" => App\Models\Customer::where("company_id", $company_id)->get(),
+            "vehicles" => App\Models\Vehicle::where("company_id", $company_id)->get(),
+            "services" => App\Models\Service::where("company_id", $company_id)->get(),
+            // TODO
+            "notes" => $note,
+            "terms" => $terms,
+            "policy" => $policy,
         ]);
     });
     Route::post("/invoice/estimate", [InvoiceController::class, "estimate"])->name("estimate");
@@ -296,10 +316,12 @@ Route::middleware('auth')->group(function () {
     Route::post("/task", [TaskController::class, "store"])->name("task.store");
     Route::put("/task", [TaskController::class, "assignTasks"])->name("task.assign");
 
-
     Route::get('/customer', function () {
+        $user = auth()->user();
+        $company_id = $user->company_id;
+
         return Inertia\Inertia::render("Customer", [
-            "customers" => App\Models\Customer::all(),
+            "customers" => App\Models\Customer::where("company_id", $company_id)->get(),
         ]);
     });
     Route::post('/customer', [CustomerController::class, 'store'])->name('customer.store');
@@ -319,8 +341,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/employee/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
 
     Route::get('/inventory/service', function () {
+        $user = auth()->user();
+        $company_id = $user->company_id;
+
         return Inertia\Inertia::render("Inventory/Service", [
-            "services" => App\Models\Service::all(),
+            "services" => App\Models\Service::where("company_id", $company_id)->get(),
         ]);
     });
     Route::post('/inventory/service', [ServiceController::class, 'store'])->name('service.store');

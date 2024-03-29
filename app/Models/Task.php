@@ -23,6 +23,7 @@ class Task extends Model
         'end_time',
         'type',
         'user_id',
+        'company_id'
     ];
 
     // make relationship with user

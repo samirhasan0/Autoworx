@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('amount', 8, 2);
             $table->text('note')->nullable();
             $table->date('date')->default(now());
+            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
         });
     }
 
