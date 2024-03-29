@@ -38,7 +38,7 @@ class TaskController extends Controller
         // return the tasks
         return Inertia::render('Task', [
             'tasks' => $taskWithAssignedUsers,
-            'users' => User::all(),
+            'users' => User::where('company_id', $company_id)->get(),
         ]);
     }
 
@@ -62,33 +62,6 @@ class TaskController extends Controller
         $formFields["timezone"] = $request->input("timezone", ""); // TODO
         $formFields["company_id"] = $company_id;
 
-        // Check if the date is in the past
-        if (strtotime($formFields["date"]) < strtotime(date("Y-m-d"))) {
-            return redirect()->back()->withErrors(["date" => "The date cannot be in the past"]);
-        }
-
-        // Check if the start time with date is in the past
-        if (strtotime($formFields["date"] . " " . $formFields["start_time"]) < strtotime(date("Y-m-d H:i"))) {
-            return redirect()->back()->withErrors(["start_time" => "The start time cannot be in the past"]);
-        }
-
-        // Check if the end time is less than or equal the start time
-        if (strtotime($formFields["end_time"]) <= strtotime($formFields["start_time"])) {
-            return redirect()->back()->withErrors(["end_time" => "The end time cannot be less than or equal the start time"]);
-        }
-
-        // Check if the start_time is between an existing task
-        $tasks = Task::where("date", $formFields["date"])
-            ->where("user_id", auth()->user()->id)
-            ->where(function ($query) use ($formFields) {
-                $query->whereBetween("start_time", [$formFields["start_time"], $formFields["end_time"]])
-                    ->orWhereBetween("end_time", [$formFields["start_time"], $formFields["end_time"]]);
-            })
-            ->get();
-        if ($tasks->count() > 0) {
-            return redirect()->back()->withErrors(["start_time" => "A task already exists. Please choose another time"]);
-        }
-
         // add user_id to request
         $formFields["user_id"] = auth()->user()->id;
 
@@ -97,15 +70,6 @@ class TaskController extends Controller
 
         // assigned users for the task
         $assignedUsers = $formFields["assigned_users"];
-
-        // Check if the assigned users is empty
-        if (empty($assignedUsers)) {
-            // assign the current user to the task
-            $assignedUsers = [auth()->user()->id];
-        } else {
-            // join current user with assigned users array
-            array_push($assignedUsers, auth()->user()->id);
-        }
 
         foreach ($assignedUsers as $assignedUser) {
             // get the user
@@ -141,34 +105,6 @@ class TaskController extends Controller
         ]);
         $formFields["assigned_users"] = $request->input("assigned_users", "");
         $formFields["timezone"] = $request->input("timezone", "");
-
-        // Check if the date is in the past
-        if (strtotime($formFields["date"]) < strtotime(date("Y-m-d"))) {
-            return redirect()->back()->withErrors(["date" => "The date cannot be in the past"]);
-        }
-
-        // Check if the start time with date is in the past
-        if (strtotime($formFields["date"] . " " . $formFields["start_time"]) < strtotime(date("Y-m-d H:i"))) {
-            return redirect()->back()->withErrors(["start_time" => "The start time cannot be in the past"]);
-        }
-
-        // Check if the end time is less than or equal the start time
-        if (strtotime($formFields["end_time"]) <= strtotime($formFields["start_time"])) {
-            return redirect()->back()->withErrors(["end_time" => "The end time cannot be less than or equal the start time"]);
-        }
-
-        // Check if the start_time is between an existing task
-        $tasks = Task::where("date", $formFields["date"])
-            ->where("user_id", auth()->user()->id)
-            ->where("id", "!=", $id)
-            ->where(function ($query) use ($formFields) {
-                $query->whereBetween("start_time", [$formFields["start_time"], $formFields["end_time"]])
-                    ->orWhereBetween("end_time", [$formFields["start_time"], $formFields["end_time"]]);
-            })
-            ->get();
-        if ($tasks->count() > 0) {
-            return redirect()->back()->withErrors(["start_time" => "A task already exists. Please choose another time"]);
-        }
 
         // Find the task
         $task = Task::find($id);
