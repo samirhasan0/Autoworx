@@ -44,11 +44,11 @@ export default function Day() {
 
   const rows = [
     "All Day",
-    // 1pm to 12am
+    // 1am to 12pm
     ...Array.from(
       { length: 24 },
       (_, i) =>
-        `${i + 1 > 12 ? i + 1 - 12 : i + 1} ${i + 1 >= 12 ? "AM" : "PM"}`
+        `${i + 1 > 12 ? i + 1 - 12 : i + 1} ${i + 1 >= 12 ? "PM" : "AM"}`
     ),
   ];
 

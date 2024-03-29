@@ -66,7 +66,7 @@ export default function Week() {
 
   // Generate the hourly rows
   const hourlyRows = Array.from({ length: 24 }, (_, i) => [
-    `${i + 1 > 12 ? i + 1 - 12 : i + 1} ${i + 1 >= 12 ? "AM" : "PM"}`,
+    `${i + 1 > 12 ? i + 1 - 12 : i + 1} ${i + 1 >= 12 ? "PM" : "AM"}`,
     // empty cells
     ...Array.from({ length: 7 }),
   ]);
