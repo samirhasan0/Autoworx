@@ -200,6 +200,7 @@ class InvoiceController extends Controller
             'policy' => $validatedData['additional_policy'] ?? '',
             'issue_date' => $validatedData['issue_date'],
             'salesperson' => $validatedData['salesperson'],
+            'company_id' => $company_id,
 
         ]);
 

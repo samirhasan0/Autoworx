@@ -69,7 +69,7 @@ class TaskController extends Controller
         $task = Task::create($formFields);
 
         // assigned users for the task
-        $assignedUsers = $formFields["assigned_users"];
+        $assignedUsers = $formFields["assigned_users"] ?? [];
 
         foreach ($assignedUsers as $assignedUser) {
             // get the user

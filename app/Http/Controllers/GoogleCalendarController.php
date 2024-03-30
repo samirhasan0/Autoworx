@@ -275,19 +275,23 @@ class GoogleCalendarController extends Controller
     // Get the Google Calendar event object
     public static function getGoogleCalendarEvent($task, $user)
     {
+        $start_time = $task->start_time instanceof Carbon ? $task->start_time->format('H:i') : substr($task->start_time, 0, 5);
+
+        $end_time = $task->end_time instanceof Carbon ? $task->end_time->format('H:i') : substr($task->end_time, 0, 5);
+
         return new Google_Service_Calendar_Event([
             'summary' => $task->title,
             // TODO: store timezone in user's table rather than task's table
             'start' => [
                 'dateTime' => Carbon::createFromFormat(
                     'Y-m-d H:i',
-                    $task->date . ' ' . $task->start_time,
+                    $task->date . ' ' . $start_time,
                     $user->timezone
                 )->format(DateTime::RFC3339),
                 'timeZone' => $user->timezone,
             ],
             'end' => [
-                'dateTime' => Carbon::createFromFormat('Y-m-d H:i', $task->date . ' ' . $task->end_time, $user->timezone)->format(DateTime::RFC3339),
+                'dateTime' => Carbon::createFromFormat('Y-m-d H:i', $task->date . ' ' . $end_time, $user->timezone)->format(DateTime::RFC3339),
                 'timeZone' => $user->timezone,
             ],
         ]);

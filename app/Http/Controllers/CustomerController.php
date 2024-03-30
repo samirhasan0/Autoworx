@@ -20,10 +20,10 @@ class CustomerController extends Controller
             'state' => 'required',
             'zip' => 'required',
         ]);
+        $validatedData['company_id'] = $user->company_id;
 
         $customer = new Customer;
         $customer->fill($validatedData);
-        $customer->company_id = $user->company_id;
 
         $customer->save();
 
