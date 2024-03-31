@@ -16,10 +16,10 @@ Route::post('register', [RegisteredUserController::class, 'store'])->name('regis
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
+        ->name('register'); // 
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login');
+        ->name('login'); // 
 
     Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login');
 

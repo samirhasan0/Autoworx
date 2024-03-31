@@ -23,6 +23,8 @@ export default function AddVehicle() {
   const { props } = usePage();
   const vehicles = props.vehicles as VehicleType[];
 
+  const [selectedVehicle, setSelectedVehicle] = useState<VehicleType>();
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     post(route("vehicle.store"), {
@@ -75,18 +77,31 @@ export default function AddVehicle() {
           {option === "EXISTING_VEHICLE" && (
             <div className="mt-2">
               <label className="block text-sm">Vehicle</label>
-              <select className="w-full">
+              <select
+                className="w-full"
+                onChange={(e) =>
+                  setSelectedVehicle(vehicles[parseInt(e.target.value)])
+                }
+              >
                 <option value="">Select Vehicle</option>
                 {vehicles.map((vehicle, index) => (
                   <option
                     key={index}
-                    onClick={() => addVehicle(vehicle)}
+                    // onClick={() => addVehicle(vehicle)}
                     className="cursor-pointer hover:bg-slate-100 p-2"
+                    value={index}
                   >
                     {vehicle.model}
                   </option>
                 ))}
               </select>
+
+              <button
+                onClick={() => addVehicle(selectedVehicle)}
+                className="mt-2 bg-blue-500 text-white rounded-md p-2 mx-auto block"
+              >
+                Save
+              </button>
             </div>
           )}
 

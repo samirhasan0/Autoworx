@@ -25,6 +25,8 @@ export default function AddInvoice() {
   const { props } = usePage();
   const customers = props.customers as CustomerType[];
 
+  const [selectedCustomer, setSelectedCustomer] = useState<CustomerType>();
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     post(route("customer.store"), {
@@ -78,19 +80,34 @@ export default function AddInvoice() {
             <div>
               <div className="mt-2">
                 <label className="block text-sm">Customer</label>
-                <select className="w-full">
+                <select
+                  className="w-full"
+                  onChange={(e) =>
+                    setSelectedCustomer(
+                      customers.find(
+                        (customer) => customer.id === parseInt(e.target.value)
+                      )
+                    )
+                  }
+                >
                   <option value="">Select Customer</option>
                   {customers.map((customer: any) => (
                     <option
                       key={customer.id}
                       value={customer.id}
-                      onClick={() => addCustomer(customer)}
+                      // onClick={() => addCustomer(customer)}
                     >
                       {customer.name}
                       {` - ${customer.email}`}
                     </option>
                   ))}
                 </select>
+                <button
+                  className="mt-2 bg-blue-500 text-white px-3 py-1 rounded-md active:scale-95 mx-auto block"
+                  onClick={() => addCustomer(selectedCustomer)}
+                >
+                  Save
+                </button>
               </div>
             </div>
           )}

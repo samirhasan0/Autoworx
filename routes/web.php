@@ -385,6 +385,4 @@ Route::middleware('auth')->group(function () {
     })->name("messages.store");
 });
 
-
-
 require __DIR__ . '/auth.php';
